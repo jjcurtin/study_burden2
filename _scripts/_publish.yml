@@ -1,8 +1,0 @@
-- source: ana_adherence.qmd
-  quarto-pub:
-    - id: f39d5292-2b85-4c95-9bb9-ede596fd43f5
-      url: 'https://kendra-wyant.quarto.pub/ema-adherence-c061'
-- source: adherence.qmd
-  quarto-pub:
-    - id: 76db3c1e-663a-46cc-80da-b021678e3b61
-      url: 'https://kendra-wyant.quarto.pub/ema-adherence'
