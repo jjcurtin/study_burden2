@@ -1,0 +1,4 @@
+- source: ana_adherence.qmd
+  quarto-pub:
+    - id: 8fa734cd-1a07-4d1c-9928-4ada9ad5ba3a
+      url: 'https://kendra-wyant.quarto.pub/ema-adherence-4177'

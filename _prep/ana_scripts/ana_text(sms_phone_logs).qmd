@@ -1,0 +1,65 @@
+---
+title: "ana_text(sms_phone_logs)"
+author: Kendra and Olivia
+format:
+  html:
+    embed-resources: true
+    toc: true
+    toc_depth: 4
+editor_options:
+  chunk_output_type: console
+---
+
+## Notes
+
+Some scripting notes for text analyses.
+
+## Set up
+
+```{r}
+#| include: false
+
+options(conflicts.policy = "depends.ok")
+library(tidyverse) 
+library(tidytext)
+library(wordcloud2)
+
+devtools::source_url("https://github.com/jjcurtin/lab_support/blob/main/format_path.R?raw=true")
+
+theme_set(theme_classic())
+
+path_prep <- format_path("studydata/risk2/data_processed/prep")
+```
+
+## Read in data
+
+```{r}
+comments <- read_csv(file.path(path_prep, "qual_data.csv"),
+                   show_col_types = FALSE) |> 
+  select(1:5)
+```
+
+## Look at word counts (word clouds)
+
+SMS phone logs
+```{r}
+tidy_comments <- comments |> 
+  unnest_tokens(word, answer) |> # tokenize comments
+  anti_join(stop_words)
+
+tidy_comments |> 
+  filter(data == "sms_phone_logs" & !is.na(word) & !word %in% c("sms", "phone", "logs")) |> 
+  count(word) |> 
+  arrange(desc(n)) |> 
+  drop_na() |>
+  print(n = 20)
+```
+
+```{r}
+tidy_comments |> 
+  filter(data == "sms_phone_logs" & !is.na(word) & !word %in% c("sms", "phone", "logs")) |> 
+  count(word) |> 
+  arrange(desc(n)) |>
+  wordcloud2()
+```
+

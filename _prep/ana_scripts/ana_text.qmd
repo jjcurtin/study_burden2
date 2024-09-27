@@ -1,0 +1,150 @@
+---
+title: "Ana text" 
+author: "Kendra and Olivia"
+date: "`r lubridate::today()`"
+format: 
+  html: 
+    embed-resources: true 
+    toc: true 
+    toc_depth: 4
+editor_options: 
+  chunk_output_type: console
+---   
+
+## Notes
+
+Some scripting notes for text analyses.
+
+
+
+## Set up
+```{r}
+#| include: false
+
+options(conflicts.policy = "depends.ok")
+library(tidyverse) 
+library(tidytext)
+library(wordcloud2)
+
+devtools::source_url("https://github.com/jjcurtin/lab_support/blob/main/format_path.R?raw=true")
+
+theme_set(theme_classic())
+
+path_prep <- format_path("studydata/risk2/data_processed/prep")
+```
+
+## Read in data
+
+```{r}
+comments <- read_csv(file.path(path_prep, "final_comments.csv"),
+                   show_col_types = FALSE) 
+```
+
+## Look at words counts (word clouds)
+
+- will probably want to expand list of our own stop words for comments that occur a lot but dont add value (e.g., Its okay, Dont mind it). 
+
+Current stop words:
+type of data
+dont mind
+
+```{r}
+custom_stop_words <- tibble(word = c("daily", "update", "gps", "monthly", "logs",
+                                     "dont", "mind"),
+                            lexicon = c("CUSTOM"))
+
+# Bind the custom stop words to stop_words
+stop_words <- stop_words %>% 
+  bind_rows(custom_stop_words)
+```
+
+
+Example using daily update
+```{r}
+tidy_comments <- comments |> 
+  mutate(id = row_number()) |> # sets each comment to its own document id
+  unnest_tokens(word, answer) |> # tokenize comments
+  anti_join(stop_words)
+
+tidy_comments |> 
+  filter(data == "daily_update") |> 
+  count(word) |> 
+  arrange(desc(n)) |> 
+  print(n = 20)
+```
+
+
+```{r}
+tidy_comments |> 
+  filter(data == "daily_update" & !is.na(word) & !word %in% c("daily", "update")) |> 
+  count(word) |> 
+  arrange(desc(n)) |>
+  wordcloud2()
+```
+
+
+## Sentiment analysis
+
+NRC dictionary (10 categories)
+```{r}
+sentiment_comments <- tidy_comments |> 
+  inner_join(get_sentiments("nrc"))
+
+sentiment_comments |> 
+  count(sentiment) |> 
+  arrange(desc(n))
+
+word_counts <- sentiment_comments |> 
+  group_by(word, sentiment) |> 
+  count() |> 
+  arrange(desc(n))
+```
+
+
+
+## Topic modeling
+
+latent Dirichlet allocation (LDA)
+
+Create document term matric (DTM)
+```{r}
+tidy_dtm <- tidy_comments |> 
+  count(word, subid) |> 
+  cast_dtm(subid, word, n) |> 
+  as.matrix()
+```
+
+Run topic model
+```{r}
+library(topicmodels)
+
+lda <- LDA(tidy_dtm, 
+           k = 4, # number of topics
+           method = "Gibbs",
+           control = list(seed = 42))
+```
+
+```{r}
+lda_topics <- lda |> 
+  tidy(matrix = "beta") |> 
+  arrange(desc(beta))
+
+word_probs <- lda_topics |> 
+  group_by(topic) |> 
+  slice_max(beta, n = 15) |> 
+  ungroup() |> 
+  mutate(term = fct_reorder(term, beta))
+```
+
+```{r}
+word_probs |> 
+  ggplot(aes(x = term,
+             y = beta,
+             fill = as.factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~topic, scales = "free") +
+  coord_flip()
+```
+
+
+

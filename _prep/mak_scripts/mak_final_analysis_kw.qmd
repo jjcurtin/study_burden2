@@ -1,0 +1,928 @@
+---
+title: "Final Thematic Analysis"
+author: Kendra Wyant and Olivia Cox
+format:
+  html: 
+    embed-resources: true
+    toc: true 
+    toc_depth: 4
+editor_options: 
+  chunk_output_type: console
+---
+
+## Notes
+
+Analysis:
+
+Overall percentage of comments for each theme
+Mixed model regression on whether data type differs for theme. 
+
+
+## Set up
+
+```{r}
+#| include: false
+
+options(conflicts.policy = "depends.ok")
+library(tidyverse) 
+library(janitor)
+
+devtools::source_url("https://github.com/jjcurtin/lab_support/blob/main/format_path.R?raw=true")
+
+theme_set(theme_classic())
+
+path_prep <- format_path("studydata/risk2/data_processed/prep")
+```
+
+## Read in data
+
+```{r}
+comments <- read_csv(file.path(path_prep, "final_coded_comments.csv"),
+                          show_col_types = FALSE) |> 
+  glimpse()
+```
+
+## Add up columns
+
+```{r}
+comments_overall_descriptives <- comments |> 
+  mutate(across(honesty:`neutral_mixed_resolved`, ~ sum(.x, na.rm = TRUE)/nrow(comments)*100, 
+                .names = "perc_{.col}")) |> 
+  select(starts_with("perc")) |> 
+  slice(1) |> 
+  pivot_longer(cols = starts_with("perc"), names_to = "theme", values_to = "percent") |> 
+  mutate(theme = str_remove(theme, "perc_")) |> 
+  left_join(comments |> 
+   mutate(across(honesty:`neutral_mixed_resolved`, ~ sum(.x, na.rm = TRUE), .names = "n_{.col}")) |>
+   select(starts_with("n_")) |> 
+   slice(1) |> 
+  pivot_longer(cols = starts_with("n_"), names_to = "theme", values_to = "n") |> 
+  mutate(theme = str_remove(theme, "n_")), by = "theme") |> 
+  mutate(theme = str_remove(theme, "_resolved"))
+
+
+comments_overall_descriptives |> 
+  arrange(desc(n)) |>   # you can use this arrange function to arrange the themes in descending order
+  knitr::kable(digits = 2)
+```
+
+
+## proportion of theme endorsed by subid and data type
+
+Do we care about neutral and feedback comments? Could simplify by not including
+
+```{r}
+comments_grouped <- comments %>%
+  group_by(subid, data) %>%
+  summarize(honesty_sum = sum(honesty),
+            honesty_n = n(),
+            .groups = "drop") %>% 
+  mutate(honesty_perc = honesty_sum/honesty_n) |> 
+  left_join(comments %>%
+  group_by(subid, data) %>%
+  summarize(trouble_sum = sum(`getting in trouble`),
+            trouble_n = n(),
+            .groups = "drop") %>% 
+  mutate(trouble_perc = trouble_sum/trouble_n), by = c("subid", "data")) |> 
+  left_join(comments %>%
+  group_by(subid, data) %>%
+  summarize(data_sum = sum(`data already tracked`),
+            data_n = n(),
+            .groups = "drop") %>% 
+  mutate(data_perc = data_sum/data_n), by = c("subid", "data")) |>  
+  left_join(comments %>%
+  group_by(subid, data) %>%
+  summarize(research_sum = sum(`research/study/science`),
+            research_n = n(),
+            .groups = "drop") %>% 
+  mutate(research_perc = research_sum/research_n), by = c("subid", "data")) |> 
+  left_join(comments %>%
+  group_by(subid, data) %>%
+  summarize(privacy_sum = sum(privacy),
+            privacy_n = n(),
+            .groups = "drop") %>% 
+  mutate(privacy_perc = privacy_sum/privacy_n), by = c("subid", "data")) |> 
+  left_join(comments %>%
+  group_by(subid, data) %>%
+  summarize(acceptability_sum = sum(acceptability_resolved),
+            acceptability_n = n(),
+            .groups = "drop") %>% 
+  mutate(acceptability_perc = acceptability_sum/acceptability_n), by = c("subid", "data")) |> 
+  left_join(comments %>%
+  group_by(subid, data) %>%
+  summarize(sustainability_sum = sum(sustainability_resolved),
+            sustainability_n = n(),
+            .groups = "drop") %>% 
+  mutate(sustainability_perc = sustainability_sum/sustainability_n), by = c("subid", "data")) |> 
+  left_join(comments %>%
+  group_by(subid, data) %>%
+  summarize(benefits_sum = sum(benefits_resolved),
+            benefits_n = n(),
+            .groups = "drop") %>% 
+  mutate(benefits_perc = benefits_sum/benefits_n), by = c("subid", "data")) |> 
+  left_join(comments %>%
+  group_by(subid, data) %>%
+  summarize(trust_sum = sum(trust_resolved),
+            trust_n = n(),
+            .groups = "drop") %>% 
+  mutate(trust_perc = trust_sum/trust_n), by = c("subid", "data")) |> 
+  left_join(comments %>%
+  group_by(subid, data) %>%
+  summarize(usability_sum = sum(usability_resolved),
+           usability_n = n(),
+            .groups = "drop") %>% 
+  mutate(usability_perc = usability_sum/usability_n), by = c("subid", "data")) |> 
+  left_join(comments %>%
+  group_by(subid, data) %>%
+  summarize(feedback_sum = sum(feedback_resolved),
+            feedback_n = n(),
+            .groups = "drop") %>% 
+  mutate(feedback_perc = feedback_sum/feedback_n), by = c("subid", "data")) |> 
+  left_join(comments %>%
+  group_by(subid, data) %>%
+  summarize(positive_sum = sum(positive_resolved),
+            positive_n = n(),
+            .groups = "drop") %>% 
+  mutate(positive_perc = positive_sum/positive_n), by = c("subid", "data")) |> 
+  left_join(comments %>%
+  group_by(subid, data) %>%
+  summarize(negative_sum = sum(negative_resolved),
+            negative_n = n(),
+            .groups = "drop") %>% 
+  mutate(negative_perc = negative_sum/negative_n), by = c("subid", "data")) |> 
+  left_join(comments %>%
+  group_by(subid, data) %>%
+  summarize(neutral_sum = sum(`neutral_mixed_resolved`),
+            neutral_n = n(),
+            .groups = "drop") %>%
+  mutate(neutral_perc = neutral_sum/neutral_n), by = c("subid", "data"))
+```
+
+## Positive Comments
+
+Make difference scores
+```{r}
+pos_diff <- comments_grouped |> 
+  select(subid, data, positive_perc) |> 
+  pivot_wider(names_from = "data", values_from = "positive_perc") |> 
+  mutate(diff_daily_month = daily_update - monthly_update,
+         diff_daily_gps = daily_update - gps,
+         diff_daily_sms_content = daily_update - sms_content,
+         diff_daily_logs = daily_update - sms_phone_logs,
+         diff_gps_month = gps - monthly_update,
+         diff_gps_sms_content = gps - sms_content,
+         diff_gps_logs = gps - sms_phone_logs,
+         diff_month_sms_content = monthly_update - sms_content,
+         diff_month_logs = monthly_update - sms_phone_logs,
+         diff_sms_content_logs = sms_content - sms_phone_logs)
+```
+
+```{r}
+broom::tidy(lm(diff_daily_month ~ 1, data = pos_diff))
+broom::tidy(lm(diff_daily_gps ~ 1, data = pos_diff))
+broom::tidy(lm(diff_daily_sms_content ~ 1, data = pos_diff))
+broom::tidy(lm(diff_daily_logs ~ 1, data = pos_diff))
+broom::tidy(lm(diff_gps_month ~ 1, data = pos_diff))
+broom::tidy(lm(diff_gps_sms_content ~ 1, data = pos_diff))
+broom::tidy(lm(diff_gps_logs ~ 1, data = pos_diff))
+broom::tidy(lm(diff_month_sms_content ~ 1, data = pos_diff))
+broom::tidy(lm(diff_month_logs ~ 1, data = pos_diff))
+broom::tidy(lm(diff_sms_content_logs ~ 1, data = pos_diff))
+
+```
+
+
+```{r}
+comments_grouped |> 
+  group_by(data) |> 
+  mutate(data = factor(data, levels = c("daily_update", "monthly_update", "gps", "sms_phone_logs", "sms_content"),
+                       labels = c("Daily update", "Monthly update", "Geolocation", "SMS/phone logs", "SMS content"))) |> 
+  summarize(mean = mean(positive_perc),
+            se = (sd(positive_perc))/(sqrt(n()))) |> 
+  ggplot() +
+  geom_col(aes(x = as.factor(data), y = mean, 
+               fill = as.factor(data)),
+           alpha = .4, color = "black") +
+  geom_errorbar(aes(x = as.factor(data), ymin = mean - se, ymax = mean + se, width = .4))+
+  labs(x = NULL,
+       y = "Proportion of comments",
+       title = "Proportion of Positive Comments by Data Type") +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 45, hjust = 1))+
+  scale_y_continuous(limits = c(0, 1.0))
+```
+
+
+
+## Negative Comments
+
+Make difference scores
+```{r}
+neg_diff <- comments_grouped |> 
+  select(subid, data, negative_perc) |> 
+  pivot_wider(names_from = "data", values_from = "negative_perc") |> 
+  mutate(diff_daily_month = daily_update - monthly_update,
+         diff_daily_gps = daily_update - gps,
+         diff_daily_sms_content = daily_update - sms_content,
+         diff_daily_logs = daily_update - sms_phone_logs,
+         diff_gps_month = gps - monthly_update,
+         diff_gps_sms_content = gps - sms_content,
+         diff_gps_logs = gps - sms_phone_logs,
+         diff_month_sms_content = monthly_update - sms_content,
+         diff_month_logs = monthly_update - sms_phone_logs,
+         diff_sms_content_logs = sms_content - sms_phone_logs)
+```
+
+```{r}
+broom::tidy(lm(diff_daily_month ~ 1, data = neg_diff))
+broom::tidy(lm(diff_daily_gps ~ 1, data = neg_diff))
+broom::tidy(lm(diff_daily_sms_content ~ 1, data = neg_diff))
+broom::tidy(lm(diff_daily_logs ~ 1, data = neg_diff))
+broom::tidy(lm(diff_gps_month ~ 1, data = neg_diff))
+broom::tidy(lm(diff_gps_sms_content ~ 1, data = neg_diff))
+broom::tidy(lm(diff_gps_logs ~ 1, data = neg_diff))
+broom::tidy(lm(diff_month_sms_content ~ 1, data = neg_diff))
+broom::tidy(lm(diff_month_logs ~ 1, data = neg_diff))
+broom::tidy(lm(diff_sms_content_logs ~ 1, data = neg_diff))
+
+```
+
+
+```{r}
+comments_grouped |> 
+  group_by(data) |> 
+    mutate(data = factor(data, levels = c("daily_update", "monthly_update", "gps", "sms_phone_logs", "sms_content"),
+                       labels = c("Daily update", "Monthly update", "Geolocation", "SMS/phone logs", "SMS content"))) |> 
+  summarize(mean = mean(negative_perc),
+            se = (sd(negative_perc))/(sqrt(n()))) |> 
+  ggplot() +
+  geom_col(aes(x = as.factor(data), y = mean, 
+               fill = as.factor(data)),
+           alpha = .4, color = "black") +
+  geom_errorbar(aes(x = as.factor(data), ymin = mean - se, ymax = mean + se, width = .4))+
+  labs(x = NULL,
+       y = "Proportion of comments",
+       title = "Proportion of Negative Comments by Data Type") +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 45, hjust = 1))+
+  scale_y_continuous(limits = c(0, 1.0))
+```
+
+
+
+## Acceptability Comments
+
+Make difference scores
+```{r}
+accept_diff <- comments_grouped |> 
+  select(subid, data, acceptability_perc) |> 
+  pivot_wider(names_from = "data", values_from = "acceptability_perc") |> 
+  mutate(diff_daily_month = daily_update - monthly_update,
+         diff_daily_gps = daily_update - gps,
+         diff_daily_sms_content = daily_update - sms_content,
+         diff_daily_logs = daily_update - sms_phone_logs,
+         diff_gps_month = gps - monthly_update,
+         diff_gps_sms_content = gps - sms_content,
+         diff_gps_logs = gps - sms_phone_logs,
+         diff_month_sms_content = monthly_update - sms_content,
+         diff_month_logs = monthly_update - sms_phone_logs,
+         diff_sms_content_logs = sms_content - sms_phone_logs)
+```
+
+```{r}
+broom::tidy(lm(diff_daily_month ~ 1, data = accept_diff))
+broom::tidy(lm(diff_daily_gps ~ 1, data = accept_diff))
+broom::tidy(lm(diff_daily_sms_content ~ 1, data = accept_diff))
+broom::tidy(lm(diff_daily_logs ~ 1, data = accept_diff))
+broom::tidy(lm(diff_gps_month ~ 1, data = accept_diff))
+broom::tidy(lm(diff_gps_sms_content ~ 1, data = accept_diff))
+broom::tidy(lm(diff_gps_logs ~ 1, data = accept_diff))
+broom::tidy(lm(diff_month_sms_content ~ 1, data = accept_diff))
+broom::tidy(lm(diff_month_logs ~ 1, data = accept_diff))
+broom::tidy(lm(diff_sms_content_logs ~ 1, data = accept_diff))
+
+```
+
+
+```{r}
+comments_grouped |> 
+  group_by(data) |> 
+    mutate(data = factor(data, levels = c("daily_update", "monthly_update", "gps", "sms_phone_logs", "sms_content"),
+                       labels = c("Daily update", "Monthly update", "Geolocation", "SMS/phone logs", "SMS content"))) |> 
+  summarize(mean = mean(acceptability_perc),
+            se = (sd(acceptability_perc))/(sqrt(n()))) |> 
+  ggplot() +
+  geom_col(aes(x = as.factor(data), y = mean, 
+               fill = as.factor(data)),
+           alpha = .4, color = "black") +
+  geom_errorbar(aes(x = as.factor(data), ymin = mean - se, ymax = mean + se, width = .4))+
+  labs(x = NULL,
+       y = "Proportion of comments",
+       title = "Proportion of Acceptability Comments by Data Type") +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 45, hjust = 1))+
+  scale_y_continuous(limits = c(0, 1.0))
+```
+
+
+## Benefits Comments
+
+Make difference scores
+```{r}
+benefits_diff <- comments_grouped |> 
+  select(subid, data, benefits_perc) |> 
+  pivot_wider(names_from = "data", values_from = "benefits_perc") |> 
+  mutate(diff_daily_month = daily_update - monthly_update,
+         diff_daily_gps = daily_update - gps,
+         diff_daily_sms_content = daily_update - sms_content,
+         diff_daily_logs = daily_update - sms_phone_logs,
+         diff_gps_month = gps - monthly_update,
+         diff_gps_sms_content = gps - sms_content,
+         diff_gps_logs = gps - sms_phone_logs,
+         diff_month_sms_content = monthly_update - sms_content,
+         diff_month_logs = monthly_update - sms_phone_logs,
+         diff_sms_content_logs = sms_content - sms_phone_logs)
+```
+
+```{r}
+broom::tidy(lm(diff_daily_month ~ 1, data = benefits_diff))
+broom::tidy(lm(diff_daily_gps ~ 1, data = benefits_diff))
+broom::tidy(lm(diff_daily_sms_content ~ 1, data = benefits_diff))
+broom::tidy(lm(diff_daily_logs ~ 1, data = benefits_diff))
+broom::tidy(lm(diff_gps_month ~ 1, data = benefits_diff))
+broom::tidy(lm(diff_gps_sms_content ~ 1, data = benefits_diff))
+broom::tidy(lm(diff_gps_logs ~ 1, data = benefits_diff))
+broom::tidy(lm(diff_month_sms_content ~ 1, data = benefits_diff))
+broom::tidy(lm(diff_month_logs ~ 1, data = benefits_diff))
+broom::tidy(lm(diff_sms_content_logs ~ 1, data = benefits_diff))
+
+```
+
+
+```{r}
+comments_grouped |> 
+  group_by(data) |> 
+    mutate(data = factor(data, levels = c("daily_update", "monthly_update", "gps", "sms_phone_logs", "sms_content"),
+                       labels = c("Daily update", "Monthly update", "Geolocation", "SMS/phone logs", "SMS content"))) |> 
+  summarize(mean = mean(benefits_perc),
+            se = (sd(benefits_perc))/(sqrt(n()))) |> 
+  ggplot() +
+  geom_col(aes(x = as.factor(data), y = mean, 
+               fill = as.factor(data)),
+           alpha = .4, color = "black") +
+  geom_errorbar(aes(x = as.factor(data), ymin = mean - se, ymax = mean + se, width = .4))+
+  labs(x = NULL,
+       y = "Proportion of comments",
+       title = "Proportion of Benefits Comments by Data Type") +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 45, hjust = 1))+
+  scale_y_continuous(limits = c(0, 1.0))
+```
+
+## Sustainability Comments
+
+Make difference scores
+```{r}
+sustain_diff <- comments_grouped |> 
+  select(subid, data, sustainability_perc) |> 
+  pivot_wider(names_from = "data", values_from = "sustainability_perc") |> 
+  mutate(diff_daily_month = daily_update - monthly_update,
+         diff_daily_gps = daily_update - gps,
+         diff_daily_sms_content = daily_update - sms_content,
+         diff_daily_logs = daily_update - sms_phone_logs,
+         diff_gps_month = gps - monthly_update,
+         diff_gps_sms_content = gps - sms_content,
+         diff_gps_logs = gps - sms_phone_logs,
+         diff_month_sms_content = monthly_update - sms_content,
+         diff_month_logs = monthly_update - sms_phone_logs,
+         diff_sms_content_logs = sms_content - sms_phone_logs)
+```
+
+```{r}
+broom::tidy(lm(diff_daily_month ~ 1, data = sustain_diff))
+broom::tidy(lm(diff_daily_gps ~ 1, data = sustain_diff))
+broom::tidy(lm(diff_daily_sms_content ~ 1, data = sustain_diff))
+broom::tidy(lm(diff_daily_logs ~ 1, data = sustain_diff))
+broom::tidy(lm(diff_gps_month ~ 1, data = sustain_diff))
+broom::tidy(lm(diff_gps_sms_content ~ 1, data = sustain_diff))
+broom::tidy(lm(diff_gps_logs ~ 1, data = sustain_diff))
+broom::tidy(lm(diff_month_sms_content ~ 1, data = sustain_diff))
+broom::tidy(lm(diff_month_logs ~ 1, data = sustain_diff))
+broom::tidy(lm(diff_sms_content_logs ~ 1, data = sustain_diff))
+
+```
+
+
+```{r}
+comments_grouped |> 
+  group_by(data) |> 
+    mutate(data = factor(data, levels = c("daily_update", "monthly_update", "gps", "sms_phone_logs", "sms_content"),
+                       labels = c("Daily update", "Monthly update", "Geolocation", "SMS/phone logs", "SMS content"))) |> 
+  summarize(mean = mean(sustainability_perc),
+            se = (sd(sustainability_perc))/(sqrt(n()))) |> 
+  ggplot() +
+  geom_col(aes(x = as.factor(data), y = mean, 
+               fill = as.factor(data)),
+           alpha = .4, color = "black") +
+  geom_errorbar(aes(x = as.factor(data), ymin = mean - se, ymax = mean + se, width = .4))+
+  labs(x = NULL,
+       y = "Proportion of comments",
+       title = "Proportion of Sustainability Comments by Data Type") +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 45, hjust = 1))+
+  scale_y_continuous(limits = c(0, 1.0))
+```
+
+
+## Trust Comments
+
+Make difference scores
+```{r}
+trust_diff <- comments_grouped |> 
+  select(subid, data, trust_perc) |> 
+  pivot_wider(names_from = "data", values_from = "trust_perc") |> 
+  mutate(diff_daily_month = daily_update - monthly_update,
+         diff_daily_gps = daily_update - gps,
+         diff_daily_sms_content = daily_update - sms_content,
+         diff_daily_logs = daily_update - sms_phone_logs,
+         diff_gps_month = gps - monthly_update,
+         diff_gps_sms_content = gps - sms_content,
+         diff_gps_logs = gps - sms_phone_logs,
+         diff_month_sms_content = monthly_update - sms_content,
+         diff_month_logs = monthly_update - sms_phone_logs,
+         diff_sms_content_logs = sms_content - sms_phone_logs)
+```
+
+```{r}
+broom::tidy(lm(diff_daily_month ~ 1, data = trust_diff))
+broom::tidy(lm(diff_daily_gps ~ 1, data = trust_diff))
+broom::tidy(lm(diff_daily_sms_content ~ 1, data = trust_diff))
+broom::tidy(lm(diff_daily_logs ~ 1, data = trust_diff))
+broom::tidy(lm(diff_gps_month ~ 1, data = trust_diff))
+broom::tidy(lm(diff_gps_sms_content ~ 1, data = trust_diff))
+broom::tidy(lm(diff_gps_logs ~ 1, data = trust_diff))
+broom::tidy(lm(diff_month_sms_content ~ 1, data = trust_diff))
+broom::tidy(lm(diff_month_logs ~ 1, data = trust_diff))
+broom::tidy(lm(diff_sms_content_logs ~ 1, data = trust_diff))
+
+```
+
+
+```{r}
+comments_grouped |> 
+  group_by(data) |> 
+    mutate(data = factor(data, levels = c("daily_update", "monthly_update", "gps", "sms_phone_logs", "sms_content"),
+                       labels = c("Daily update", "Monthly update", "Geolocation", "SMS/phone logs", "SMS content"))) |> 
+  summarize(mean = mean(trust_perc),
+            se = (sd(trust_perc))/(sqrt(n()))) |> 
+  ggplot() +
+  geom_col(aes(x = as.factor(data), y = mean, 
+               fill = as.factor(data)),
+           alpha = .4, color = "black") +
+  geom_errorbar(aes(x = as.factor(data), ymin = mean - se, ymax = mean + se, width = .4))+
+  labs(x = NULL,
+       y = "Proportion of comments",
+       title = "Proportion of Trust Comments by Data Type") +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 45, hjust = 1))+
+  scale_y_continuous(limits = c(0, 1.0))
+```
+
+
+## Usability Comments
+
+Make difference scores
+```{r}
+use_diff <- comments_grouped |> 
+  select(subid, data, usability_perc) |> 
+  pivot_wider(names_from = "data", values_from = "usability_perc") |> 
+  mutate(diff_daily_month = daily_update - monthly_update,
+         diff_daily_gps = daily_update - gps,
+         diff_daily_sms_content = daily_update - sms_content,
+         diff_daily_logs = daily_update - sms_phone_logs,
+         diff_gps_month = gps - monthly_update,
+         diff_gps_sms_content = gps - sms_content,
+         diff_gps_logs = gps - sms_phone_logs,
+         diff_month_sms_content = monthly_update - sms_content,
+         diff_month_logs = monthly_update - sms_phone_logs,
+         diff_sms_content_logs = sms_content - sms_phone_logs)
+```
+
+```{r}
+broom::tidy(lm(diff_daily_month ~ 1, data = use_diff))
+broom::tidy(lm(diff_daily_gps ~ 1, data = use_diff))
+broom::tidy(lm(diff_daily_sms_content ~ 1, data = use_diff))
+broom::tidy(lm(diff_daily_logs ~ 1, data = use_diff))
+broom::tidy(lm(diff_gps_month ~ 1, data = use_diff))
+broom::tidy(lm(diff_gps_sms_content ~ 1, data = use_diff))
+broom::tidy(lm(diff_gps_logs ~ 1, data = use_diff))
+broom::tidy(lm(diff_month_sms_content ~ 1, data = use_diff))
+broom::tidy(lm(diff_month_logs ~ 1, data = use_diff))
+broom::tidy(lm(diff_sms_content_logs ~ 1, data = use_diff))
+
+```
+
+
+```{r}
+comments_grouped |> 
+  group_by(data) |> 
+    mutate(data = factor(data, levels = c("daily_update", "monthly_update", "gps", "sms_phone_logs", "sms_content"),
+                       labels = c("Daily update", "Monthly update", "Geolocation", "SMS/phone logs", "SMS content"))) |> 
+  summarize(mean = mean(usability_perc),
+            se = (sd(usability_perc))/(sqrt(n()))) |> 
+  ggplot() +
+  geom_col(aes(x = as.factor(data), y = mean, 
+               fill = as.factor(data)),
+           alpha = .4, color = "black") +
+  geom_errorbar(aes(x = as.factor(data), ymin = mean - se, ymax = mean + se, width = .4))+
+  labs(x = NULL,
+       y = "Proportion of comments",
+       title = "Proportion of Usability Comments by Data Type") +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 45, hjust = 1))+
+  scale_y_continuous(limits = c(0, 1.0))
+```
+
+
+
+
+
+
+## Map demographic information onto data frame by subid
+
+
+```{r}
+dem <- read_csv(here::here(path_prep, "demographics.csv"),
+                show_col_types = FALSE) |> 
+  glimpse()
+```
+
+Join both data sets by subid
+```{r}
+comments_grouped_dem <- comments_grouped |> 
+  left_join(dem, by = "subid") |> 
+  mutate(race = factor(race, levels = c("White/Caucasian", "Black/African American",
+                                        "Hispanic, Latino, or Spanish origin", "other"),
+                       labels = c("White/Caucasian", "Black/African American",
+                                        "Hispanic, Latino, or Spanish Origin", "Other")))
+```
+
+
+## Race/Ethnicity
+
+Positive sig tests
+- hispanic sig different for monthly update (compared to white)
+- Back sig different for geolocation (compared to white)
+```{r}
+broom::tidy(lm(positive_perc ~ race, subset(comments_grouped_dem, data == "monthly_update")))
+broom::tidy(lm(positive_perc ~ race, subset(comments_grouped_dem, data == "daily_update")))
+broom::tidy(lm(positive_perc ~ race, subset(comments_grouped_dem, data == "gps")))
+broom::tidy(lm(positive_perc ~ race, subset(comments_grouped_dem, data == "sms_phone_logs")))
+broom::tidy(lm(positive_perc ~ race, subset(comments_grouped_dem, data == "sms_content")))
+```
+
+Negative sig tests
+- hispanic sig different for monthly update (compared to white)
+- Other sig different for logs (compared to white)
+- Back sig different for sms content (compared to white)
+```{r}
+broom::tidy(lm(negative_perc ~ race, subset(comments_grouped_dem, data == "monthly_update")))
+broom::tidy(lm(negative_perc ~ race, subset(comments_grouped_dem, data == "daily_update")))
+broom::tidy(lm(negative_perc ~ race, subset(comments_grouped_dem, data == "gps")))
+broom::tidy(lm(negative_perc ~ race, subset(comments_grouped_dem, data == "sms_phone_logs")))
+broom::tidy(lm(negative_perc ~ race, subset(comments_grouped_dem, data == "sms_content")))
+```
+
+
+Acceptability sig tests
+- other significantly different on monthly update (compared to white)
+```{r}
+broom::tidy(lm(acceptability_perc ~ race, subset(comments_grouped_dem, data == "monthly_update")))
+broom::tidy(lm(acceptability_perc ~ race, subset(comments_grouped_dem, data == "daily_update")))
+broom::tidy(lm(acceptability_perc ~ race, subset(comments_grouped_dem, data == "gps")))
+broom::tidy(lm(acceptability_perc ~ race, subset(comments_grouped_dem, data == "sms_phone_logs")))
+broom::tidy(lm(acceptability_perc ~ race, subset(comments_grouped_dem, data == "sms_content")))
+```
+
+Benefits sig tests
+```{r}
+broom::tidy(lm(benefits_perc ~ race, subset(comments_grouped_dem, data == "monthly_update")))
+broom::tidy(lm(benefits_perc ~ race, subset(comments_grouped_dem, data == "daily_update")))
+broom::tidy(lm(benefits_perc ~ race, subset(comments_grouped_dem, data == "gps")))
+broom::tidy(lm(benefits_perc ~ race, subset(comments_grouped_dem, data == "sms_phone_logs")))
+broom::tidy(lm(benefits_perc ~ race, subset(comments_grouped_dem, data == "sms_content")))
+```
+
+
+trust sig tests
+```{r}
+broom::tidy(lm(trust_perc ~ race, subset(comments_grouped_dem, data == "monthly_update")))
+broom::tidy(lm(trust_perc ~ race, subset(comments_grouped_dem, data == "daily_update")))
+broom::tidy(lm(trust_perc ~ race, subset(comments_grouped_dem, data == "gps")))
+broom::tidy(lm(trust_perc ~ race, subset(comments_grouped_dem, data == "sms_phone_logs")))
+broom::tidy(lm(trust_perc ~ race, subset(comments_grouped_dem, data == "sms_content")))
+```
+
+
+sustainability sig tests
+black sig different than white on sms content and daily update
+```{r}
+broom::tidy(lm(sustainability_perc ~ race, subset(comments_grouped_dem, data == "monthly_update")))
+broom::tidy(lm(sustainability_perc ~ race, subset(comments_grouped_dem, data == "daily_update")))
+broom::tidy(lm(sustainability_perc ~ race, subset(comments_grouped_dem, data == "gps")))
+broom::tidy(lm(sustainability_perc ~ race, subset(comments_grouped_dem, data == "sms_phone_logs")))
+broom::tidy(lm(sustainability_perc ~ race, subset(comments_grouped_dem, data == "sms_content")))
+```
+
+
+usability sig tests
+```{r}
+broom::tidy(lm(usability_perc ~ race, subset(comments_grouped_dem, data == "monthly_update")))
+broom::tidy(lm(usability_perc ~ race, subset(comments_grouped_dem, data == "daily_update")))
+broom::tidy(lm(usability_perc ~ race, subset(comments_grouped_dem, data == "gps")))
+broom::tidy(lm(usability_perc ~ race, subset(comments_grouped_dem, data == "sms_phone_logs")))
+broom::tidy(lm(usability_perc ~ race, subset(comments_grouped_dem, data == "sms_content")))
+```
+
+
+
+Positive sig tests
+- hispanic sig different for monthly update (compared to white)
+- Black sig different for geolocation (compared to white)
+```{r}
+# saved as 700 x 500
+comments_grouped_dem |> 
+  filter(!is.na(race)) |> 
+  group_by(data, race) |> 
+    mutate(data = factor(data, levels = c("daily_update", "monthly_update", "gps", "sms_phone_logs", "sms_content"),
+                       labels = c("Daily update", "Monthly update", "Geolocation", "SMS/phone logs", "SMS content"))) |> 
+  summarize(mean = mean(positive_perc),
+            se = (sd(positive_perc))/(sqrt(n()))) |>
+  mutate(significant = if_else((race == "Hispanic, Latino, or Spanish Origin" & data == "Monthly update") | (race == "Black/African American" & data == "Geolocation"), TRUE, FALSE)) |> 
+  ggplot() +
+  geom_col(aes(x = as.factor(race), y = mean, 
+               fill = as.factor(data)),
+           alpha = .4, color = "black") +
+  geom_errorbar(aes(x = as.factor(race), ymin = mean - se, ymax = mean + se, width = .4))+
+  geom_text(aes(label = if_else(significant, "*", ""), group = factor(race), x = factor(race), y = .85), 
+            position = position_dodge(width = .9), vjust = -.1, size = 14 / .pt) +
+  facet_wrap(~data) +
+  labs(x = NULL,
+       y = "Proportion of comments",
+       title = "Proportion of Positive Comments by Race/Ethnicity") +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 45, hjust = 1))+
+  scale_y_continuous(limits = c(0, 1.0)) 
+  
+```
+
+Negative sig tests
+- hispanic sig different for monthly update (compared to white)
+- Other sig different for logs (compared to white)
+- Back sig different for sms content (compared to white)
+```{r}
+comments_grouped_dem |> 
+  filter(!is.na(race)) |> 
+  group_by(data, race) |> 
+    mutate(data = factor(data, levels = c("daily_update", "monthly_update", "gps", "sms_phone_logs", "sms_content"),
+                       labels = c("Daily update", "Monthly update", "Geolocation", "SMS/phone logs", "SMS content"))) |> 
+  summarize(mean = mean(negative_perc),
+            se = (sd(negative_perc))/(sqrt(n()))) |> 
+  mutate(significant = if_else((race == "Hispanic, Latino, or Spanish Origin" & data == "Monthly update") | (race == "Black/African American" & data == "SMS content") |  (race == "Other" & data == "SMS/phone logs"), TRUE, FALSE)) |> 
+  ggplot() +
+  geom_col(aes(x = as.factor(race), y = mean, 
+               fill = as.factor(data)),
+           alpha = .4, color = "black") +
+  geom_errorbar(aes(x = as.factor(race), ymin = mean - se, ymax = mean + se, width = .4))+
+  geom_text(aes(label = if_else(significant, "*", ""), group = factor(race), x = factor(race), y = .85), 
+            position = position_dodge(width = .9), vjust = -.1, size = 14 / .pt) +
+  facet_wrap(~data) +
+  labs(x = NULL,
+       y = "Proportion of comments",
+       title = "Proportion of Negative Comments by Race/Ethnicity") +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 45, hjust = 1))+
+  scale_y_continuous(limits = c(0, 1.0))
+```
+
+
+- other significantly different on monthly update (compared to white)
+```{r}
+comments_grouped_dem |> 
+  filter(!is.na(race)) |> 
+  group_by(data, race) |> 
+    mutate(data = factor(data, levels = c("daily_update", "monthly_update", "gps", "sms_phone_logs", "sms_content"),
+                       labels = c("Daily update", "Monthly update", "Geolocation", "SMS/phone logs", "SMS content"))) |> 
+  summarize(mean = mean(acceptability_perc),
+            se = (sd(acceptability_perc))/(sqrt(n()))) |> 
+  mutate(significant = if_else((race == "Other" & data == "Monthly update"), TRUE, FALSE)) |> 
+  ggplot() +
+  geom_col(aes(x = as.factor(race), y = mean, 
+               fill = as.factor(data)),
+           alpha = .4, color = "black") +
+  geom_errorbar(aes(x = as.factor(race), ymin = mean - se, ymax = mean + se, width = .4))+
+  geom_text(aes(label = if_else(significant, "*", ""), group = factor(race), x = factor(race), y = .85), 
+            position = position_dodge(width = .9), vjust = -.1, size = 14 / .pt) +
+  facet_wrap(~data) +
+  labs(x = NULL,
+       y = "Proportion of comments",
+       title = "Proportion of Acceptability Comments by Race/Ethnicity") +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 45, hjust = 1))+
+  scale_y_continuous(limits = c(0, 1.0))
+```
+
+
+```{r}
+comments_grouped_dem |> 
+  filter(!is.na(race)) |> 
+  group_by(data, race) |> 
+    mutate(data = factor(data, levels = c("daily_update", "monthly_update", "gps", "sms_phone_logs", "sms_content"),
+                       labels = c("Daily update", "Monthly update", "Geolocation", "SMS/phone logs", "SMS content"))) |> 
+  summarize(mean = mean(benefits_perc),
+            se = (sd(benefits_perc))/(sqrt(n()))) |> 
+  ggplot() +
+  geom_col(aes(x = as.factor(race), y = mean, 
+               fill = as.factor(data)),
+           alpha = .4, color = "black") +
+  geom_errorbar(aes(x = as.factor(race), ymin = mean - se, ymax = mean + se, width = .4))+
+  facet_wrap(~data) +
+  labs(x = NULL,
+       y = "Proportion of comments",
+       title = "Proportion of Benefits Comments by Race/Ethnicity") +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 45, hjust = 1))+
+  scale_y_continuous(limits = c(0, 1.0))
+```
+
+
+```{r}
+comments_grouped_dem |> 
+  filter(!is.na(race)) |> 
+  group_by(data, race) |> 
+    mutate(data = factor(data, levels = c("daily_update", "monthly_update", "gps", "sms_phone_logs", "sms_content"),
+                       labels = c("Daily update", "Monthly update", "Geolocation", "SMS/phone logs", "SMS content"))) |> 
+  summarize(mean = mean(trust_perc),
+            se = (sd(trust_perc))/(sqrt(n()))) |> 
+  ggplot() +
+  geom_col(aes(x = as.factor(race), y = mean, 
+               fill = as.factor(data)),
+           alpha = .4, color = "black") +
+  geom_errorbar(aes(x = as.factor(race), ymin = mean - se, ymax = mean + se, width = .4))+
+  facet_wrap(~data) +
+  labs(x = NULL,
+       y = "Proportion of comments",
+       title = "Proportion of Trust Comments by Race/Ethnicity") +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 45, hjust = 1))+
+  scale_y_continuous(limits = c(0, 1.0))
+```
+
+black sig different than white on sms content and daily update
+```{r}
+comments_grouped_dem |> 
+  filter(!is.na(race)) |> 
+  group_by(data, race) |> 
+    mutate(data = factor(data, levels = c("daily_update", "monthly_update", "gps", "sms_phone_logs", "sms_content"),
+                       labels = c("Daily update", "Monthly update", "Geolocation", "SMS/phone logs", "SMS content"))) |> 
+  summarize(mean = mean(sustainability_perc),
+            se = (sd(sustainability_perc))/(sqrt(n()))) |> 
+   mutate(significant = if_else((race == "Black/African American" & data == "Daily update") | (race == "Black/African American" & data == "SMS content"), TRUE, FALSE)) |> 
+  ggplot() +
+  geom_col(aes(x = as.factor(race), y = mean, 
+               fill = as.factor(data)),
+           alpha = .4, color = "black") +
+  geom_errorbar(aes(x = as.factor(race), ymin = mean - se, ymax = mean + se, width = .4))+
+   geom_text(aes(label = if_else(significant, "*", ""), group = factor(race), x = factor(race), y = .85), 
+            position = position_dodge(width = .9), vjust = -.1, size = 14 / .pt) +
+  facet_wrap(~data) +
+  labs(x = NULL,
+       y = "Proportion of comments",
+       title = "Proportion of Sustainability Comments by Race/Ethnicity") +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 45, hjust = 1))+
+  scale_y_continuous(limits = c(0, 1.0))
+```
+
+
+```{r}
+comments_grouped_dem |> 
+  filter(!is.na(race)) |> 
+  group_by(data, race) |> 
+    mutate(data = factor(data, levels = c("daily_update", "monthly_update", "gps", "sms_phone_logs", "sms_content"),
+                       labels = c("Daily update", "Monthly update", "Geolocation", "SMS/phone logs", "SMS content"))) |> 
+  summarize(mean = mean(usability_perc),
+            se = (sd(usability_perc))/(sqrt(n()))) |> 
+  ggplot() +
+  geom_col(aes(x = as.factor(race), y = mean, 
+               fill = as.factor(data)),
+           alpha = .4, color = "black") +
+  geom_errorbar(aes(x = as.factor(race), ymin = mean - se, ymax = mean + se, width = .4))+
+  facet_wrap(~data) +
+  labs(x = NULL,
+       y = "Proportion of comments",
+       title = "Proportion of Usability Comments by Race/Ethnicity") +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 45, hjust = 1))+
+  scale_y_continuous(limits = c(0, 1.0))
+```
+
+## Gender
+
+
+```{r}
+comments_grouped_dem |> 
+  filter(gender %in% c("Man", "Woman")) |> 
+  group_by(data, gender) |> 
+    mutate(data = factor(data, levels = c("daily_update", "monthly_update", "gps", "sms_phone_logs", "sms_content"),
+                       labels = c("Daily update", "Monthly update", "Geolocation", "SMS/phone logs", "SMS content"))) |> 
+  summarize(mean = mean(positive_perc),
+            se = (sd(positive_perc))/(sqrt(n()))) |> 
+  ggplot() +
+  geom_col(aes(x = as.factor(gender), y = mean, 
+               fill = as.factor(data)),
+           alpha = .4, color = "black") +
+  geom_errorbar(aes(x = as.factor(gender), ymin = mean - se, ymax = mean + se, width = .4))+
+  facet_wrap(~data) +
+  labs(x = NULL,
+       y = "Proportion of comments",
+       title = "Proportion of Positive Comments by Gender") +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 45, hjust = 1))+
+  scale_y_continuous(limits = c(0, 1.0))
+```
+
+```{r}
+comments_grouped_dem |> 
+  filter(gender %in% c("Man", "Woman")) |> 
+  group_by(data, gender) |> 
+    mutate(data = factor(data, levels = c("daily_update", "monthly_update", "gps", "sms_phone_logs", "sms_content"),
+                       labels = c("Daily update", "Monthly update", "Geolocation", "SMS/phone logs", "SMS content"))) |> 
+  summarize(mean = mean(negative_perc),
+            se = (sd(negative_perc))/(sqrt(n()))) |> 
+  ggplot() +
+  geom_col(aes(x = as.factor(gender), y = mean, 
+               fill = as.factor(data)),
+           alpha = .4, color = "black") +
+  geom_errorbar(aes(x = as.factor(gender), ymin = mean - se, ymax = mean + se, width = .4))+
+  facet_wrap(~data) +
+  labs(x = NULL,
+       y = "Proportion of comments",
+       title = "Proportion of Negative Comments by Gender") +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 45, hjust = 1))+
+  scale_y_continuous(limits = c(0, 1.0))
+```
+
+
+
+
+## Income
+ 
+```{r}
+comments_grouped_dem |> 
+  filter(!is.na(income)) |> 
+ group_by(data, income) |> 
+    mutate(data = factor(data, levels = c("daily_update", "monthly_update", "gps", "sms_phone_logs", "sms_content"),
+                       labels = c("Daily update", "Monthly update", "Geolocation", "SMS/phone logs", "SMS content")),
+           income = if_else(income == "Less than $25,000", "Less than $25,000", "More than $25,000")) |> 
+  summarize(mean = mean(positive_perc),
+            se = (sd(positive_perc))/(sqrt(n()))) |> 
+  ggplot() +
+  geom_col(aes(x = as.factor(income), y = mean, 
+               fill = as.factor(data)),
+           alpha = .4, color = "black") +
+  geom_errorbar(aes(x = as.factor(income), ymin = mean - se, ymax = mean + se, width = .4))+
+  facet_wrap(~data) +
+  labs(x = NULL,
+       y = "Proportion of comments",
+       title = "Proportion of Positive Comments by Income") +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 45, hjust = 1))+
+  scale_y_continuous(limits = c(0, 1.0))
+```
+
+```{r}
+comments_grouped_dem |> 
+  filter(!is.na(income)) |> 
+ group_by(data, income) |> 
+    mutate(data = factor(data, levels = c("daily_update", "monthly_update", "gps", "sms_phone_logs", "sms_content"),
+                       labels = c("Daily update", "Monthly update", "Geolocation", "SMS/phone logs", "SMS content")),
+           income = if_else(income == "Less than $25,000", "Less than $25,000", "More than $25,000")) |> 
+  summarize(mean = mean(negative_perc),
+            se = (sd(negative_perc))/(sqrt(n()))) |> 
+  ggplot() +
+  geom_col(aes(x = as.factor(income), y = mean, 
+               fill = as.factor(data)),
+           alpha = .4, color = "black") +
+  geom_errorbar(aes(x = as.factor(income), ymin = mean - se, ymax = mean + se, width = .4))+
+  facet_wrap(~data) +
+  labs(x = NULL,
+       y = "Proportion of comments",
+       title = "Proportion of Negative Comments by Income") +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 45, hjust = 1))+
+  scale_y_continuous(limits = c(0, 1.0))
+```
+
+

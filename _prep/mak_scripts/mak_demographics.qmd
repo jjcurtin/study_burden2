@@ -1,0 +1,358 @@
+---
+title: "Demographics" 
+author: "Kendra and Olivia"
+date: "`r lubridate::today()`"
+format: 
+  html: 
+    embed-resources: true
+    toc: true 
+    toc_depth: 4
+editor_options: 
+  chunk_output_type: console
+---   
+
+## Notes
+
+This script calculates demographics for Burden2 study.
+
+Outstanding issues:
+
+- subid 1069 does not have intake survey.   
+- 2 subids have duplicate intake - Demographics are same across surveys for 1329 but not for 1163 (removing demographics reported by 1163 until we can resolve this discrepancy)
+- Missing demographics for subid 1006  
+
+- other things we might want to add to this tibble: dsm score and num lapses on study
+
+- For Olivia's analyses we will need to report missing demographics for 3 subids: 1069, 1163, and 1006
+
+## Set up
+```{r}
+#| include: false
+#| message: false
+
+options(conflicts.policy = "depends.ok")
+library(tidyverse) 
+library(janitor)
+
+devtools::source_url("https://github.com/jjcurtin/lab_support/blob/main/format_path.R?raw=true")
+devtools::source_url("https://github.com/jjcurtin/lab_support/blob/main/print_kbl.R?raw=true")
+
+theme_set(theme_classic())
+
+path_processed <- format_path("studydata/risk2/data_processed/shared")
+path_prep <- format_path("studydata/risk2/data_processed/prep")
+```
+
+## Read in data
+
+Burden data
+```{r}
+burden <- read_csv(file.path(path_prep, "final_coded_comments.csv"),
+                   show_col_types = FALSE)
+```
+
+Intake survey (with demographics)
+```{r}
+intake_survey <- read_csv(here::here(path_processed, "survey_intake.csv"),
+                         show_col_types = FALSE) |> 
+  filter(subid %in% burden$subid)
+```
+
+
+
+## Num intake surveys per subid
+```{r}
+length(unique(intake_survey$subid)) # number of unique subids (199)
+length(unique(burden$subid)) # number of unique subids (220)
+```
+
+Subid 1069 does not have intake
+```{r}
+burden |> 
+  filter(!subid %in% intake_survey$subid)
+```
+
+2 intake duplicates
+
+```{r}
+intake_survey |> 
+  group_by(subid, user_survey_guid) |> 
+  count() |> 
+  group_by(subid) |> 
+  count() |> 
+  arrange(desc(n))
+```
+
+Demographics are same across surveys for 1329 but not for 1163
+```{r}
+intake_survey |> 
+  filter(subid %in% c(1163, 1329)) |> 
+  arrange(subid) |> 
+  filter(variable_name %in% c("race", "gender", "orientation", "income", "employment", "education", "age")) |> 
+  select(subid, user_survey_guid, variable_name, answer) |> 
+  view()
+```
+
+
+## Missing data
+
+```{r}
+naniar::miss_var_summary(intake_survey)
+```
+
+```{r}
+intake_survey |> 
+  filter(is.na(answer)) |> 
+  janitor::tabyl(variable_name) |> 
+  arrange(desc(n))
+```
+
+```{r}
+intake_survey |> 
+  filter(variable_name == "age" & is.na(answer))
+```
+
+Missing demographics for subid 1006
+```{r}
+intake_survey |> 
+  filter(subid == 1006) |> 
+  view()
+```
+
+
+## Create Demographics Tibble with variables of interest
+```{r}
+dem <- intake_survey |> 
+  select(subid, variable_name, answer) |> 
+  filter(variable_name %in% c("race", "gender", "orientation", "income",
+                              "employment", "education", "age", "romantic_status",
+                              "living_arrangement_1", "med", "whoassist_life_overdose"))
+```
+
+
+## Fixes
+
+Add missing demographics for subid 1069 (set to NA). Change demographics to NA for 1163 and remove duplicate entries.
+
+```{r}
+dem <- dem |> 
+  bind_rows(tibble(subid = 1069,
+                   variable_name = c("race", "gender", "orientation", "income",
+                              "employment", "education", "age", "romantic_status",
+                              "living_arrangement_1", "med", "whoassist_life_overdose"),
+                   answer = NA_character_))
+
+dem <- dem |> 
+  mutate(answer = if_else(subid == 1163, NA_character_, answer))
+
+dem <- dem |> 
+  group_by(subid, variable_name) |> 
+  slice(1)
+```
+
+`r length(unique(dem$subid))` subids in final tibble.
+
+
+
+## Summarize demographic categories  
+
+### Race/ethnicity
+
+```{r}
+dem |> 
+  filter(variable_name == "race") |> 
+  tabyl(answer) |> 
+  print_kbl()
+```
+
+Other 
+
+```{r}
+tabyl(subset(intake_survey, variable_name == "race_other")$answer)
+```
+
+
+Will create following race categories: White, Black, Hispanic, other
+
+
+
+
+
+
+### Gender
+
+```{r}
+dem |> 
+  filter(variable_name == "gender") |> 
+  tabyl(answer) |> 
+  print_kbl()
+```
+
+### Orientation
+
+```{r}
+dem |> 
+  filter(variable_name == "orientation") |> 
+  tabyl(answer) |> 
+  print_kbl()
+```
+
+### Income
+
+```{r}
+dem |> 
+  filter(variable_name == "income") |> 
+  tabyl(answer) |> 
+  print_kbl()
+```
+
+### Employment
+
+```{r}
+dem |> 
+  filter(variable_name == "employment") |> 
+  tabyl(answer) |> 
+  print_kbl()
+```
+
+### Education
+
+```{r}
+dem |> 
+  filter(variable_name == "education") |> 
+  tabyl(answer) |> 
+  print_kbl()
+```
+
+### Age
+
+```{r}
+dem |> 
+  filter(variable_name == "age") |> 
+  tabyl(answer) |> 
+  print_kbl()
+```
+
+### Committed Relationship
+
+```{r}
+dem |> 
+  filter(variable_name == "romantic_status") |> 
+  tabyl(answer) |> 
+  print_kbl()
+```
+
+### Living Arrangement
+
+```{r}
+dem |> 
+  filter(variable_name == "living_arrangement_1") |> 
+  tabyl(answer) |> 
+  print_kbl()
+```
+
+### Medication
+
+```{r}
+dem |> 
+  filter(variable_name == "med") |> 
+  tabyl(answer) |> 
+  print_kbl()
+```
+
+### Lifetime History of Overdose
+
+```{r}
+dem |> 
+  filter(variable_name == "whoassist_life_overdose") |> 
+  tabyl(answer) |> 
+  print_kbl()
+```
+
+
+Pivot wider and make label adjustments
+```{r}
+dem_final <- dem |> 
+   pivot_wider(names_from = "variable_name", values_from = "answer") |> 
+   mutate(race = if_else(race %in% c("Black/African American", 
+                                    "Hispanic, Latino, or Spanish origin",
+                                    "White/Caucasian", NA), race, "other"),
+          gender = if_else(gender %in% c("Man", "Woman", NA), gender, "other"))
+```
+
+
+## Add location data
+
+
+## Get total DSM score
+
+```{r}
+dsm <- intake_survey |> 
+  filter(str_detect(variable_name, "dsm")) |> 
+  select(subid, question_content, variable_name, answer) |> 
+  mutate(answer = if_else(answer == "Yes", 1, 0))
+```
+
+```{r}
+dsm <- dsm |> 
+  group_by(subid) |> 
+  mutate(dsm_criteria_1 = if_else((variable_name == "dsm_1" & answer == 1) | (variable_name == "dsm_2" & answer == 1) , 1, 0),
+         dsm_criteria_2 = if_else(variable_name == "dsm_3" & answer == 1, 1, 0),
+         dsm_criteria_3 = if_else((variable_name == "dsm_4" & answer == 1) | (variable_name == "dsm_5" & answer == 1) | (variable_name == "dsm_6" & answer == 1)  , 1, 0),
+         dsm_criteria_4 = if_else((variable_name == "dsm_11" & answer == 1) , 1, 0),
+         dsm_criteria_5 = if_else((variable_name == "dsm_7" & answer == 1) , 1, 0),
+         dsm_criteria_6 = if_else((variable_name == "dsm_8" & answer == 1) , 1, 0),
+         dsm_criteria_7 = if_else((variable_name == "dsm_9" & answer == 1) , 1, 0),
+         dsm_criteria_8 = if_else((variable_name == "dsm_10" & answer == 1) , 1, 0),
+         dsm_criteria_9 = if_else((variable_name == "dsm_12" & answer == 1) , 1, 0),
+         dsm_criteria_10 = if_else((variable_name == "dsm_13" & answer == 1)  | (variable_name == "dsm_14" & answer == 1) , 1, 0),
+         dsm_criteria_11 = if_else((variable_name == "dsm_15" & answer == 1)  | (variable_name == "dsm_16" & answer == 1) , 1, 0)) |> 
+  summarise(dsm_criteria_1 = if_else(sum(dsm_criteria_1) >= 1, 1, 0),
+            dsm_criteria_2 = if_else(sum(dsm_criteria_2) >= 1, 1, 0),
+            dsm_criteria_3 = if_else(sum(dsm_criteria_3) >= 1, 1, 0),
+            dsm_criteria_4 = if_else(sum(dsm_criteria_4) >= 1, 1, 0),
+            dsm_criteria_5 = if_else(sum(dsm_criteria_5) >= 1, 1, 0),
+            dsm_criteria_6 = if_else(sum(dsm_criteria_6) >= 1, 1, 0),
+            dsm_criteria_7 = if_else(sum(dsm_criteria_7, na.rm = TRUE) >= 1, 1, 0),
+            dsm_criteria_8 = if_else(sum(dsm_criteria_8, na.rm = TRUE) >= 1, 1, 0),
+            dsm_criteria_9 = if_else(sum(dsm_criteria_9) >= 1, 1, 0),
+            dsm_criteria_10 = if_else(sum(dsm_criteria_10) >= 1, 1, 0),
+            dsm_criteria_11 = if_else(sum(dsm_criteria_10) >= 1, 1, 0)) 
+```
+
+```{r}
+dsm <- dsm |> 
+  rowwise() |> 
+  mutate(dsm_total = sum(dsm_criteria_1, dsm_criteria_2, dsm_criteria_3,
+                         dsm_criteria_4, dsm_criteria_5, dsm_criteria_6,
+                         dsm_criteria_7, dsm_criteria_8, dsm_criteria_9,
+                         dsm_criteria_10, dsm_criteria_11, na.rm = TRUE)) |> glimpse()
+```
+
+```{r}
+dsm |> 
+  ungroup() |> 
+  summarize(min(dsm_total),
+            max(dsm_total),
+            mean(dsm_total),
+            sd(dsm_total),
+            median(dsm_total)) |> 
+  glimpse()
+
+tabyl(dsm$dsm_total)
+```
+
+
+
+
+
+## Save out tibble
+
+```{r}
+dem_final |> 
+  write_csv(here::here(path_prep, "demographics.csv"))
+```
+
+
+
+
