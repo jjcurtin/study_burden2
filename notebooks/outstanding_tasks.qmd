@@ -1,0 +1,33 @@
+---
+title: Outstanding tasks
+editor_options: 
+  chunk_output_type: console
+---
+
+1. Update cleaning/processing scripts
+
+    - DONE 9/3/24
+
+2. recode neutral/mixed comments
+
+    - DONE 9/3/24
+    
+3. quant analyses on dislike and interference
+
+    - overall DONE!
+    - by demographic and number of lapses up until survey?
+    
+4. get overall EMA compliance and disposition
+    
+    - overall DONE 9/20/24
+    - look at compliance for participants with at least one month on study DONE 9/27/24
+    - look at demographic differences in these two behavioral measures
+    - Use number of lapses as moderator? (is it harder to comply behaviorally when lapsing?)
+
+5. rerun Qual analyses
+
+    - use number of lapses as moderator? (does engaging in illicit behavior change perceptions about providing data on use?)
+    - Cross compare affect and theme
+  
+    
+6. Categorize location data for comparisons - use population density/housing units in zip code data
