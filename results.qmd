@@ -28,14 +28,18 @@ A total of 336 participants enrolled in our study and provided at least one mont
 ### Adherence
 
 #### Participation
-A total of 336 participants enrolled in our study and provided at least one month of EMA data. @fig-1 shows participant attrition over 12 months. There was no significant difference in attrition between participants who were Non-Hispanic White and participants who were not White. There was no significant difference in attrition between participants who lapsed on study and those who did not lapse.
+A total of 336 participants enrolled in our study and provided at least one month of EMA data. @fig-1 shows participant attrition over 12 months. There was no significant difference in mean days on study between participants who were non-Hispanic White ($N = 247, M = 299, SD = 109$) and participants who were not White ($N = 89, M = 284, SD = 112$), $t(334) = -1.11, p = .27$. There was no significant difference in mean days on study between participants who reported a lapse ($N = 1 37, M = 296, SD = 107$) and those who did not report a lapse ($N = 199, M = 294, SD = 112$) while on study, $t(334) = -0.19, p = .85$.
 
 {{< embed notebooks/ana_adherence.qmd#fig-1 >}}
 
 
 
-#### Daily and Monthly Updates
-The overall adherence for the daily updates was 75%. @fig-2 shows the overall adherence rates for the daily update by month on study. Daily update adherence did not significantly differ by race. Daily update adherence did significantly differ by whether someone lapsed on study. Participants who lapsed on study, had on average 6.4% lower compliance compared to participants who did not lapse while on study. The overall adherence for the monthly updates was 96%.   
+#### Monthly and Daily Updates
+The overall adherence for the monthly updates was extremely high. Participants completed 96% of the monthly updates. 
+
+The overall adherence for the daily updates was 72%. This rate is consistent with other shorter-term EMA protocols in substance use populations (Average adherence is 75% [@jonesComplianceEcologicalMomentary2019]). @fig-2 shows the overall adherence rates for the daily update by month on study. 
+
+There was no significant difference in daily update adherence rates between participants who were non-Hispanic White ($M = .72, SD = .19$) and participants who were not white ($M = .70, SD = .19$), $t(334) = -0.88, p = .38$. There was a significant difference in adherence rates between participants who reported a lapse ($M = .69, SD = .19$) and participants who did not report a lapse ($M = .74, SD = .18$) while on study, $t(334) = 2.4, p = .02$. Participants who reported a lapse, had on average 5% lower adherence compared to participants who did not report a lapse while on study. 
 
 
 {{< embed notebooks/ana_adherence.qmd#fig-2 >}}

@@ -42,12 +42,10 @@ path_shared <- format_path("studydata/risk2/data_processed/shared")
 ema <- read_csv(here::here(path_shared, "survey_daily.csv"),
                 show_col_types = FALSE)
 
-monthly <- read_csv(here::here(path_shared, "generic_monthly_wide.csv"),
-                show_col_types = FALSE) 
+monthly <- read_csv(here::here(path_shared, "survey_monthly.csv"),
+                col_types = "dccTTccccccccccccccccccccccccccccccccc") 
 
 burden_quant <- read_csv(here::here(path_burden, "burden_quant.csv"),
-                   show_col_types = FALSE)
-burden_qual <- read_csv(here::here(path_burden, "burden_qual.csv"),
                    show_col_types = FALSE)
 
 dem <- read_csv(here::here(path_burden, "demographics.csv"),
@@ -115,56 +113,56 @@ Disposition of participants by month
 #| code-fold: true
 #| 
 month_1 <- dates |> 
-  filter(study_days >= 30) |> 
+  filter(study_days >= 28) |> 
   nrow()
 
 month_2 <- dates |> 
-  filter(study_days >= 60)  |> 
+  filter(study_days >= 56)  |> 
   nrow()
 
 month_3 <- dates |> 
-  filter(study_days >= 90)  |> 
+  filter(study_days >= 84)  |> 
   nrow()
 
 month_4 <- dates |> 
-  filter(study_days >= 120)  |> 
+  filter(study_days >= 112)  |> 
   nrow()
 
 month_4_burden <- dates |>
-  filter(study_days >= 120)  |> 
+  filter(study_days >= 112)  |> 
   filter(subid %in% burden_subids)  |> 
   nrow()
 
 month_5 <- dates |> 
-  filter(study_days >= 150)  |> 
+  filter(study_days >= 140)  |> 
   nrow()
 
 month_6 <- dates |>
-  filter(study_days >= 180)  |> 
+  filter(study_days >= 168)  |> 
   nrow()
 
 month_7 <- dates |>
-  filter(study_days >= 210)  |> 
+  filter(study_days >= 196)  |> 
   nrow()
 
 month_8 <- dates |>
-  filter(study_days >= 240)  |> 
+  filter(study_days >= 224)  |> 
   nrow()
 
 month_9 <- dates |>
-  filter(study_days >= 270)  |> 
+  filter(study_days >= 252)  |> 
   nrow()
 
 month_10 <- dates |>
-  filter(study_days >= 300)  |> 
+  filter(study_days >= 280)  |> 
   nrow()
 
 month_11 <- dates |>
-  filter(study_days >= 330) |> 
+  filter(study_days >= 308) |> 
   nrow()
 
 month_12 <- dates |>
-  filter(study_days >= 360) |> 
+  filter(study_days >= 336) |> 
   nrow()
 ```
 
@@ -242,42 +240,38 @@ disposition |>
 ```
 
 
-Attrition at 11 4 months and 11 months by race
+Days on study by race
 ```{r}
 dates_race <- dates |> 
   left_join(dem |> 
-              select(subid, race_multiple), by = "subid")
-
-baseline_race <- dates_race |> 
-  group_by(race_multiple) |> 
-  summarise(baseline_n = n())
-
-month_4_race <- dates_race |> 
-  filter(study_days >= 120)  |> 
-  group_by(race_multiple) |> 
-  summarise(month_4_n = n())
-
-month_11_race <- dates_race |> 
-  filter(study_days >= 330)  |> 
-  group_by(race_multiple) |> 
-  summarise(month_11_n = n())
-
-data_race <- baseline_race |> 
-  left_join(month_4_race, by = "race_multiple") |> 
-  left_join(month_11_race, by = "race_multiple") |> 
-  mutate(month_4_prop = month_4_n/baseline_n,
-         month_11_prop = month_11_n/baseline_n,
-         race = if_else(race_multiple == "Non-Hispanic White", .5, -.5))
-
-
-m_4_month <- lm(month_4_prop ~ race, data = data_race)
-
-broom::tidy(m_4_month)
-
-m_11_month <- lm(month_11_prop ~ race, data = data_race)
-
-broom::tidy(m_11_month)
+              select(subid, race_multiple), by = "subid") |> 
+  mutate(race = if_else(race_multiple == "Non-Hispanic White", 
+                                 "Non-Hispanic White",
+                                 "Not White"),
+         race = factor(race),
+         study_days = as.numeric(study_days))
 ```
+
+Check equal variance
+```{r}
+library(car)
+car::leveneTest(study_days ~ race, data = dates_race)
+```
+
+```{r}
+lm_days_race <- lm(study_days ~ race, data = dates_race)
+broom::tidy(lm_days_race)
+```
+
+```{r}
+dates_race |> 
+  group_by(race) |> 
+  summarise(n = n(),
+            mean_days = mean(study_days),
+            sd_days = sd(study_days))
+```
+
+
 
 Attrition by lapse
 ```{r}
@@ -286,38 +280,30 @@ dates_lapse <- dates |>
               group_by(subid) |> 
               summarise(n_lapse = n()), by = "subid") |>
   mutate(n_lapse = if_else(is.na(n_lapse), 0, n_lapse),
-         lapse = if_else(n_lapse > 0, .5, -.5))
-
-baseline_lapse <- dates_lapse |> 
-  group_by(lapse) |> 
-  summarise(baseline_n = n())
-
-month_4_lapse <- dates_lapse |> 
-  filter(study_days >= 120)  |> 
-  group_by(lapse) |> 
-  summarise(month_4_n = n())
-
-month_11_lapse <- dates_lapse |> 
-  filter(study_days >= 330)  |> 
-  group_by(lapse) |> 
-  summarise(month_11_n = n())
-
-data_lapse <- baseline_lapse |> 
-  left_join(month_4_lapse, by = "lapse") |> 
-  left_join(month_11_lapse, by = "lapse") |> 
-  mutate(month_4_prop = month_4_n/baseline_n,
-         month_11_prop = month_11_n/baseline_n)
-
-
-m_4_month_lapse <- lm(month_4_prop ~ lapse, data = data_lapse)
-
-broom::tidy(m_4_month_lapse)
-
-m_11_month_lapse <- lm(month_11_prop ~ lapse, data = data_lapse)
-
-broom::tidy(m_11_month_lapse)
+         lapse = if_else(n_lapse > 0, "lapse", "no lapse"),
+         lapse = factor(lapse),
+         study_days = as.numeric(study_days))
 ```
 
+
+Check equal variance
+```{r}
+library(car)
+car::leveneTest(study_days ~ lapse, data = dates_lapse)
+```
+
+```{r}
+lm_days_lapse <- lm(study_days ~ lapse, data = dates_lapse)
+broom::tidy(lm_days_lapse)
+```
+
+```{r}
+dates_lapse |> 
+  group_by(lapse) |> 
+  summarise(n = n(),
+            mean_days = mean(study_days),
+            sd_days = sd(study_days))
+```
 
 
 
@@ -400,11 +386,20 @@ daily_race <- count_study_dates |>
   mutate(mean = n_total/prompt_total) |> 
   left_join(dem |> 
               select(subid, race_multiple), by = "subid") |> 
-  mutate(race = if_else(race_multiple == "Non-Hispanic White", .5, -.5))
+  mutate(race = if_else(race_multiple == "Non-Hispanic White", "Non-Hispanic White", "Not White"),
+         race = factor(race))
 
-m_daily_ad <- lm(mean ~ race, data = daily_race)
+lm_daily_race<- lm(mean ~ race, data = daily_race)
 
-broom::tidy(m_daily_ad)
+broom::tidy(lm_daily_race)
+```
+
+```{r}
+daily_race |> 
+  group_by(race) |> 
+  summarise(n = n(),
+            mean_adherence = mean(mean),
+            sd = sd(mean))
 ```
 
 Adherence by lapse
@@ -417,17 +412,21 @@ lapses_per_subid <- count_study_dates |>
               group_by(subid) |> 
               summarise(n_lapse = n()), by = "subid") |>
   mutate(n_lapse = if_else(is.na(n_lapse), 0, n_lapse),
-         lapse = if_else(n_lapse > 0, .5, -.5))
+         lapse = if_else(n_lapse > 0, "lapse", "no lapse"),
+         lapse = factor(lapse))
 
-m_daily_ad_lapse <- lm(mean ~ lapse, data = lapses_per_subid)
+lm_daily_lapse <- lm(mean ~ lapse, data = lapses_per_subid)
 
-broom::tidy(m_daily_ad_lapse)
-
-lapses_per_subid |> 
-  group_by(lapse) |>
-  summarize(mean = mean(mean))
+broom::tidy(lm_daily_lapse)
 ```
 
+```{r}
+lapses_per_subid |> 
+  group_by(lapse) |> 
+  summarise(n = n(),
+            mean_adherence = mean(mean),
+            sd = sd(mean))
+```
 
 
 ### Daily Survey Adherence over time 

@@ -57,12 +57,8 @@ path_burden <- format_path("studydata/risk2/data_processed/burden2")
 ## Read in monthly surveys
 
 ```{r}
-month_survey <- read_csv(here::here(path_processed, "survey_monthly.csv"),
-                         show_col_types = FALSE) |> 
-  select(subid, user_survey_guid, start_date, complete_date, variable_name, answer) |> 
-  mutate(start_date = as_datetime(start_date, tz = "America/Chicago"),
-         complete_date = as_datetime(complete_date, tz = "America/Chicago")) |> 
-  glimpse()
+month_survey <- read_csv(here::here(path_shared, "survey_monthly.csv"),
+                         col_types = "dccTTccccccccccccccccccccccccccccccccc") 
 ```
 
 
@@ -70,29 +66,16 @@ month_survey <- read_csv(here::here(path_processed, "survey_monthly.csv"),
 
 ```{r}
 burden <- month_survey |> 
-  filter(str_detect(variable_name, "_interfer") | str_detect(variable_name, "_dislike") | 
-           str_detect(variable_name, "_comments")) |> 
-  mutate(variable_name = if_else(variable_name == "daily_update_interfer", "daily_update_interfere",
-                                 variable_name),
-         variable_name = if_else (variable_name == "video_checkin_interfer", "video_checkin_interfere",
-                                  variable_name)) |> 
+  select(subid, user_survey_guid, start_date, contains("_interfer"),  
+         contains("_dislike"), contains("_comments")) |> 
+  rename(daily_update_interfere = daily_update_interfer,
+         video_checkin_interfere = video_checkin_interfer) |> 
+  filter(!(is.na(daily_update_interfere) & is.na(video_checkin_interfere) &
+             is.na(monthly_update_interfere))) |> 
   glimpse()
 ```
 
 
-
-check variable names
-```{r}
-tabyl(burden$variable_name)
-```
-
-Pivot wider to tidy and remove video_checkin variables since did not use this sensing method
-```{r}
-burden <- burden |> 
-  filter(!str_detect(variable_name, "video_checkin")) |> 
-  pivot_wider(names_from = variable_name, values_from = answer) |> 
-  glimpse()
-```
 
 
 ## EDA
@@ -195,6 +178,14 @@ burden |>
   view()
 ```
 
+subid 1410 took survey four months in and twice at end of study - keep first survey
+```{r}
+burden <- burden |> 
+  filter(!user_survey_guid %in% c("75fc6f11-0400-470f-8481-4e1536bf45c9", 
+                                  "f8d08937-43da-480f-8394-405e28777f9e"))
+```
+
+
 Subid 1006 and 1009 took the survey twice (once 2 months in and once at the end of study). Keep first survey, but note that the first survey is earlier than other subids
 ```{r}
 burden <- burden |> 
@@ -218,8 +209,8 @@ As for people who have them back to back, that I can explain more easily. Here's
 burden |> 
   filter(subid %in% subids_2_surveys & !subid %in% c(1410, 1006, 1009)) |> 
   group_by(subid) |> 
-  summarise(min = min(complete_date),
-            max = max(complete_date)) |> 
+  summarise(min = min(start_date),
+            max = max(start_date)) |> 
   mutate(range_days = as.numeric(difftime(max, min, units = "days")))
 ```
 
@@ -236,6 +227,12 @@ burden <- burden |>
   filter(!user_survey_guid %in% guids_2_surveys)
 ```
 
+Remove subid 1441 as they only completed survey at end of study
+```{r}
+burden <- burden |> 
+  filter(!subid == 1441)
+```
+
 
 `r nrow(burden)` observations.    
 `r length(unique(burden$subid))` unique subids. 
@@ -243,7 +240,7 @@ burden <- burden |>
 
 ### Time between study start and burden survey
 
-*Missing intake study start date for subid 1069 at the moment - need to investigate.*    
+*Missing intake study start date for subid 1069 because they took monthly as intake - confirmed they took burden four months into study.*    
 
 Burden surveys were given after 62 - 142 days on study
 ```{r}
@@ -279,7 +276,7 @@ burden_quant |>
 
 ```{r}
 burden_qual <- burden |> 
- select(subid:complete_date, ends_with("_comments")) 
+ select(subid:start_date, ends_with("_comments")) 
 ```
 
 ### Missing values
