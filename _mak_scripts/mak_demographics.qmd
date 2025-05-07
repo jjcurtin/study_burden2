@@ -1,0 +1,243 @@
+---
+title: "Demographics" 
+author: "Kendra Wyant"
+date: "`r lubridate::today()`"
+format: 
+  html: 
+    embed-resources: true
+    toc: true 
+    toc_depth: 4
+editor_options: 
+  chunk_output_type: console
+---   
+
+## Notes
+
+This script calculates demographics for Burden2 study.
+
+Outstanding issues:
+
+- subid 1069 does not have intake survey - was able to impute race, age, and gender.   
+
+From Madison: 1069 is the only person who didn't take intake because their phone was stolen right around 30 days on study.   
+
+- Missing demographics for subid 1006 - was able to impute race, age, and gender 
+
+From Susan: It was never determined why those questions didn't resolve for them. They had a lot of trouble with the app and surveys in general at the start. We do have some demographic data from them in their consent form, which you can grab via `enroll <- tidy_qualtrics("dem", token_qualtrics)`. We also know that gender = Man.
+
+Primary variables for analyses:    
+
+- race (Non-Hispanic White, Black, Hispanic, Other/Multiracial)
+- gender (male, female)
+- income (less than \$25000, more than \$25000)
+- location (will be calculated in separate script)
+- number of lapses on study up until the start time of the burden survey (separate script)
+
+## Set up
+```{r}
+#| message: false
+
+source(here::here("../analysis_risk2/functions/fun_star.R"))
+library(tidyverse) 
+library(janitor)
+
+devtools::source_url("https://github.com/jjcurtin/lab_support/blob/main/format_path.R?raw=true")
+devtools::source_url("https://github.com/jjcurtin/lab_support/blob/main/print_kbl.R?raw=true")
+
+theme_set(theme_classic())
+
+path_processed <- format_path("studydata/risk2/data_processed/shared")
+path_burden <- format_path("studydata/risk2/data_processed/burden2")
+path_admin <- "P:/administration"
+```
+
+## Read in data
+
+Burden data
+```{r}
+burden <- read_csv(file.path(path_burden, "burden_quant.csv"),
+                   show_col_types = FALSE)
+```
+
+Intake survey (with demographics)
+```{r}
+intake_survey <- read_csv(here::here(path_processed, "survey_intake_wide.csv"),
+                         show_col_types = FALSE) 
+```
+
+
+
+## Num intake surveys per subid
+```{r}
+length(unique(intake_survey$subid)) # number of unique subids (246)
+length(unique(burden$subid)) # number of unique subids (247)
+```
+
+Subid 1069 does not have intake
+```{r}
+burden |> 
+  filter(!subid %in% intake_survey$subid)
+```
+
+
+## Missing data
+```{r}
+naniar::miss_var_summary(intake_survey) |> 
+  print(n = 100)
+```
+
+Missing demographics for subid 1006 
+```{r}
+intake_survey |> 
+  filter(subid == 1006) |> 
+  glimpse()
+```
+
+
+## Create Demographics Tibble with variables of interest
+```{r}
+dem <- intake_survey |> 
+  select(subid, starts_with("race"), -race_other_text_text, gender, orientation, income, 
+         employment, education, age, romantic_status, med, whoassist_life_overdose)
+```
+
+Update race variables (temp remove 1006 since missing dem vars)   
+```{r}
+dem <- dem |> 
+  filter(subid != 1006) |>
+  rowwise() |> 
+  mutate(race = case_when(sum(race_american_indian:race_pacific_islander, na.rm = TRUE) == 0 &
+                            race_white == 1 ~ "Non-Hispanic White",
+                          race_black == 1 & sum(race_american_indian:race_asian, na.rm = TRUE) == 0 &
+                            sum(race_hispanic:race_white, na.rm = TRUE) == 0 ~ 
+                            "Black/African American",
+                          race_hispanic == 1 & sum(race_american_indian:race_black, na.rm = TRUE) == 0 &
+                            sum(race_not_listed:race_white, na.rm = TRUE) == 0 ~ "Hispanic",
+                          TRUE ~ "Other or Multiracial")) |> 
+  ungroup()
+
+table(dem$race)
+```
+
+Allow for people to be in more than one race category
+```{r}
+dem <- dem |> 
+  rowwise() |> 
+  mutate(race_multiple = case_when(sum(race_american_indian:race_pacific_islander, na.rm = TRUE) == 0 &
+                            race_white == 1 ~ "Non-Hispanic White",
+                          race_black == 1  ~ "Black/African American",
+                          race_hispanic == 1 ~ "Hispanic",
+                          TRUE ~ "Other")) |> 
+  ungroup()
+
+table(dem$race_multiple)
+```
+
+
+
+Add missing demographics for subid 1006 and 1069 
+
+```{r}
+dem <- dem |> 
+  select(-c(race_american_indian:race_white)) |> 
+  full_join(tibble(subid = c(1069, 1006),
+                   gender = "Man", 
+                   orientation = NA, 
+                   income = NA, 
+                   employment = NA,
+                   education = NA, 
+                   age = "36-45", 
+                   romantic_status = NA, 
+                   med = c(NA, "Medication taken daily (e.g., Suboxone, Methadone) and medication taken monthly (e.g., Vivitrol)"), 
+                   whoassist_life_overdose = NA,
+                   race = "Non-Hispanic White",
+                   race_multiple = "Non-Hispanic White")) 
+```
+
+`r length(unique(dem$subid))` subids in final tibble.
+
+
+
+
+
+## Check responses on other variables
+
+### Gender
+
+```{r}
+tabyl(dem$gender) 
+```
+
+Make courser categories for gender
+
+```{r}
+dem <- dem |> 
+  mutate(gender = if_else(gender == "Prefer not to say", NA, gender),
+         gender = if_else(gender %in% c("Man", "Woman") | is.na(gender), 
+                          gender, "other"))
+
+tabyl(dem$gender)
+```
+
+### Orientation
+
+```{r}
+tabyl(dem$orientation) 
+```
+
+### Income
+
+```{r}
+tabyl(dem$income) 
+```
+
+### Employment
+
+```{r}
+tabyl(dem$employment) 
+```
+
+### Education
+
+```{r}
+tabyl(dem$education) 
+```
+
+### Age
+
+```{r}
+tabyl(dem$age) 
+```
+
+### Committed Relationship
+
+```{r}
+tabyl(dem$romantic_status) 
+```
+
+
+### Medication
+
+```{r}
+tabyl(dem$med) 
+```
+
+### Lifetime History of Overdose
+
+```{r}
+tabyl(dem$whoassist_life_overdose) 
+```
+
+
+
+
+## Save out tibble
+
+```{r}
+dem |> 
+  write_csv(here::here(path_burden, "demographics.csv"))
+```
+
+
+
+

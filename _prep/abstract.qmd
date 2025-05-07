@@ -1,0 +1,12 @@
+---
+title: "Leveraging Natural Language Processing and Thematic Analysis to Understand Personal Sensing Acceptability in Opioid Use Disorder Patients"
+author: Olivia Cox
+format: html
+editor: visual
+---
+
+## Abstract
+
+Opioid use disorder (OUD) is a chronic relapsing disease, affecting over 2.1 million people in the United States. Unfortunately, there are few long-term supports for people in recovery. Long-term support may be even less available for marginalized groups with known disparities in access to mental health care. Personal sensing, combined with machine learning, has the potential for scalable, long-term relapse risk monitoring. This study examined if personal sensing methods were acceptable among a national sample of people with OUD. Participants (N=200) provided sensed daily and monthly surveys, geolocation data, SMS and phone call logs, and text message content for up to one year. After using the methods for 3-4 months, participants provided open-ended responses about their experiences with each personal sensing method. Thematic analysis and topic modeling were performed to identify common themes among participants and to see if there were differences in the proportion of themes by data type and demographic group (race, gender, and income). Results showed that participants' comments were largely positive across sensing methods. Participants reported more benefits with active methods (daily and monthly surveys) and more comments related to trust and privacy with the passive methods (geolocation, call logs, SMS text message content). There were no significant differences across themes for gender and income. However, we found significant differences in the proportion of comments related to trust, benefits, sustainability, and positive/negative affect between White participants compared to Black and Hispanic participants. A structural topic model with race/ethnicity and data type as covariates yielded 15 topics. We found significant differences between White participants and Black and Hispanic participants on six topics. This research highlights the importance of considering group differences in the early stages of treatment design and adapting these tools so that supports are equitable and accessible for everyone.
+
+

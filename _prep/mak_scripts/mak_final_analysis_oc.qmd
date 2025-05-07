@@ -1,0 +1,261 @@
+---
+title: "Final Thematic Analysis"
+author: Kendra Wyant and Olivia Cox
+format:
+  html: 
+    embed-resources: true
+    toc: true 
+    toc_depth: 4
+editor_options: 
+  chunk_output_type: console
+---
+
+## Notes
+
+This file finds the percentage of comments endorsed by all participants and endorsed by subids. 
+
+## Set up
+
+```{r}
+#| include: false
+
+options(conflicts.policy = "depends.ok")
+library(tidyverse) 
+library(janitor)
+library
+
+devtools::source_url("https://github.com/jjcurtin/lab_support/blob/main/format_path.R?raw=true")
+
+theme_set(theme_classic())
+
+path_prep <- format_path("studydata/risk2/data_processed/prep")
+```
+
+## Read in data
+
+```{r}
+comments <- read_csv(file.path(path_prep, "final_coded_comments.csv"),
+                          show_col_types = FALSE) |> 
+  glimpse()
+```
+
+## Add up columns
+
+```{r}
+comments_overall_descriptives <- comments |> 
+  mutate(across(honesty:`neutral_mixed_resolved`, ~ sum(.x, na.rm = TRUE)/nrow(comments)*100, 
+                .names = "perc_{.col}")) |> 
+  select(starts_with("perc")) |> 
+  slice(1) |> 
+  pivot_longer(cols = starts_with("perc"), names_to = "theme", values_to = "percent") |> 
+  mutate(theme = str_remove(theme, "perc_")) |> 
+  left_join(comments |> 
+   mutate(across(honesty:`neutral_mixed_resolved`, ~ sum(.x, na.rm = TRUE), .names = "n_{.col}")) |>
+   select(starts_with("n_")) |> 
+   slice(1) |> 
+  pivot_longer(cols = starts_with("n_"), names_to = "theme", values_to = "n") |> 
+  mutate(theme = str_remove(theme, "n_")), by = "theme") |> 
+  mutate(theme = str_remove(theme, "_resolved"))
+
+
+comments_overall_descriptives |> 
+  arrange(desc(n)) |>   # you can use this arrange function to arrange the themes in descending order
+  knitr::kable(digits = 2)
+```
+
+
+
+
+
+```{r}
+total_sum_honesty <- sum(comments$"honesty")
+
+total_sum_trouble <- sum(comments$"getting in trouble")
+
+total_sum_data <- sum(comments$"data already tracked")
+
+total_sum_research <- sum(comments$"research/study/science")
+
+total_sum_privacy <- sum(comments$"privacy")
+
+total_sum_acceptability <- sum(comments$"acceptability_resolved")
+
+total_sum_sustainability <- sum(comments$"sustainability_resolved")
+
+total_sum_benefits <- sum(comments$"benefits_resolved")
+
+total_sum_trust <- sum(comments$"trust_resolved")
+
+total_sum_usability <- sum(comments$"usability_resolved")
+
+total_sum_feedback <- sum(comments$"feedback_resolved")
+
+total_sum_positive <- sum(comments$"positive_resolved")
+
+total_sum_negative <- sum(comments$"negative_resolved")
+
+total_sum_neutral <- sum(comments$"neutral_mixed_resolved")
+```
+
+## % of responses
+
+```{r}
+# Honesty
+31/647 * 100 
+```
+
+```{r}
+# Getting into trouble
+5/647 * 100 
+```
+
+```{r}
+# Data already tracked
+7/647 * 100 
+```
+
+```{r}
+# Research/study/science
+38/647 * 100 
+```
+
+```{r}
+# Acceptability
+195/647 * 100 
+```
+
+```{r}
+# sustainability
+85/647 * 100 
+```
+
+```{r}
+# Benefits
+148/647 * 100 
+```
+
+```{r}
+# Trust and privacy combined (52+48)
+100/647 * 100 
+```
+
+```{r}
+# Usability
+102/647 * 100 
+```
+
+```{r}
+# Feedback
+336/647 * 100
+```
+
+```{r}
+# Positive
+237/647 * 100 
+```
+
+```{r}
+# Negative
+71/647 * 100 
+```
+
+```{r}
+# Neutral/mixed
+338/647 * 100 
+```
+
+## Summary of comments by theme for each individual
+
+Calculate codes and total comments for each subid
+```{r}
+comments_by_subid <- comments %>%
+  group_by(subid) %>%
+  summarize(honesty_sum = sum(honesty),
+            honesty_n = n()) %>% 
+  mutate(honesty_perc = honesty_sum/honesty_n) |> 
+  left_join(comments %>%
+  group_by(subid) %>%
+  summarize(trouble_sum = sum(`getting in trouble`),
+            trouble_n = n()) %>% 
+  mutate(trouble_perc = trouble_sum/trouble_n), by = "subid") |> 
+  left_join(comments %>%
+  group_by(subid) %>%
+  summarize(data_sum = sum(`data already tracked`),
+            data_n = n()) %>% 
+  mutate(data_perc = data_sum/data_n), by = "subid") |>  
+  left_join(comments %>%
+  group_by(subid) %>%
+  summarize(research_sum = sum(`research/study/science`),
+            research_n = n()) %>% 
+  mutate(research_perc = research_sum/research_n), by = "subid") |> 
+  left_join(comments %>%
+  group_by(subid) %>%
+  summarize(privacy_sum = sum(privacy),
+            privacy_n = n()) %>% 
+  mutate(privacy_perc = privacy_sum/privacy_n), by = "subid") |> 
+  left_join(comments %>%
+  group_by(subid) %>%
+  summarize(acceptability_sum = sum(acceptability_resolved),
+            acceptability_n = n()) %>% 
+  mutate(acceptability_perc = acceptability_sum/acceptability_n), by = "subid") |> 
+  left_join(comments %>%
+  group_by(subid) %>%
+  summarize(sustainability_sum = sum(sustainability_resolved),
+            sustainability_n = n()) %>% 
+  mutate(sustainabilityy_perc = sustainability_sum/sustainability_n), by = "subid") |> 
+  left_join(comments %>%
+  group_by(subid) %>%
+  summarize(benefits_sum = sum(benefits_resolved),
+            benefits_n = n()) %>% 
+  mutate(benefits_perc = benefits_sum/benefits_n), by = "subid") |> 
+  left_join(comments %>%
+  group_by(subid) %>%
+  summarize(trust_sum = sum(trust_resolved),
+            trust_n = n()) %>% 
+  mutate(trust_perc = trust_sum/trust_n), by = "subid") |> 
+  left_join(comments %>%
+  group_by(subid) %>%
+  summarize(usability_sum = sum(usability_resolved),
+           usability_n = n()) %>% 
+  mutate(usability_perc = usability_sum/usability_n), by = "subid") |> 
+  left_join(comments %>%
+  group_by(subid) %>%
+  summarize(feedback_sum = sum(feedback_resolved),
+            feedback_n = n()) %>% 
+  mutate(feedback_perc = feedback_sum/feedback_n), by = "subid") |> 
+  left_join(comments %>%
+  group_by(subid) %>%
+  summarize(positive_sum = sum(positive_resolved),
+            positive_n = n()) %>% 
+  mutate(positive_perc = positive_sum/positive_n), by = "subid") |> 
+  left_join(comments %>%
+  group_by(subid) %>%
+  summarize(negative_sum = sum(negative_resolved),
+            negative_n = n()) %>% 
+  mutate(negative_perc = negative_sum/negative_n), by = "subid") |> 
+  left_join(comments %>%
+  group_by(subid) %>%
+  summarize(neutral_sum = sum(`neutral_mixed_resolved`),
+            neutral_n = n()) %>%
+  mutate(neutral_perc = neutral_sum/neutral_n), by = "subid")
+```
+
+```{r}
+view(comments_by_subid)
+```
+
+## Map demographic information onto data frame by subid
+
+```{r}
+dem <- read_csv(here::here(path_prep, "demographics.csv"),
+                show_col_types = FALSE) |> 
+  glimpse()
+```
+
+Join both data sets by subid
+```{r}
+comments_by_subid |> 
+  left_join(dem, by = "subid") |> 
+  write_csv(here::here(path_prep, "codes_with_demographics.csv"))
+```
+

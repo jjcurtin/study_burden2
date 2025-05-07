@@ -1,0 +1,235 @@
+---
+title: "Demographics" 
+author: "Kendra and Olivia"
+date: "`r lubridate::today()`"
+format: 
+  html: 
+    embed-resources: true
+    toc: true 
+    toc_depth: 4
+editor_options: 
+  chunk_output_type: console
+---   
+
+## Notes
+
+This script creates location demographic (rural vs. urban) for burden study based on enrollment home address.   
+
+Bases on 2020 census data - To qualify as an urban area, the territory identified according to criteria must encompass at least 2,000 housing units or have a population of at least 5,000.
+
+## Set up
+```{r}
+#| include: false
+#| message: false
+
+source("functions/fun_star.R") 
+options(conflicts.policy = "depends.ok")
+library(tidyverse) 
+library(janitor)
+library(zipcodeR)
+library(tidygeocoder)
+
+
+
+devtools::source_url("https://github.com/jjcurtin/lab_support/blob/main/format_path.R?raw=true")
+devtools::source_url("https://github.com/jjcurtin/lab_support/blob/main/print_kbl.R?raw=true")
+
+theme_set(theme_classic())
+
+path_processed <- format_path("studydata/risk2/data_processed/shared")
+path_prep <- format_path("studydata/risk2/data_processed/prep")
+```
+
+## Read in data
+
+Burden data
+```{r}
+burden <- read_csv(file.path(path_prep, "final_coded_comments.csv"),
+                   show_col_types = FALSE)
+```
+
+Enrollment data
+```{r}
+# Set API token
+path_admin <- "P:/administration"
+token_qualtrics <-
+  read_csv(file.path(path_admin, "credentials.csv")) %>%
+ dplyr::filter(resource == "qualtrics") %>%
+  pull(token)
+
+enroll<- 
+      tidy_qualtrics("enroll", token_qualtrics)
+
+enroll <- enroll |> 
+  select(subid, address_1:zip) |> 
+  mutate(zip = str_sub(zip, 1, 5)) |> 
+  filter(subid %in% burden$subid)
+```
+
+## Subids with location data
+
+Missing two subids addresses - 1006 and 1009 (missing other demographics for subid 1009 as well)
+```{r}
+length(unique(enroll$subid)) # 198
+length(unique(burden$subid)) # 200
+```
+
+```{r}
+burden |> 
+  filter(!subid %in% enroll$subid) |> 
+  pull(subid)
+```
+
+
+## EDA on Addresses
+
+Zipcode
+```{r}
+enroll |> 
+  tabyl(zip)
+```
+
+7 blank zipcodes
+```{r}
+enroll |> 
+  filter(zip == "") |> 
+  print_kbl()
+```
+
+Update blank zipcodes based on street, city, state    
+```{r}
+enroll <- enroll |> 
+  mutate(zip = case_when(subid == "1035" ~ "45402",
+                         subid == "1066" ~ "49938",
+                         subid == "1165" ~ "53037",
+                         subid == "1168" ~ "54220",
+                         subid == "1184" ~ "60637",
+                         subid == "1191" ~ "48124",
+                         subid == "1211" ~ "15851",
+                         TRUE ~ zip))
+```
+
+
+Geocode zipcodes - No data for 1 zip code (43087)  
+
+- based on address this is a typo - should be 43078
+```{r}
+zipcode_data <- reverse_zipcode(c(enroll$zip))
+
+enroll |> 
+  filter(zip == "43087") |> 
+  print_kbl()
+
+enroll <- enroll |> 
+  mutate(zip = case_when(subid == "1088" ~ "43078",
+                         TRUE ~ zip))
+```
+
+No census tract for zipcode 94623 - update to 94607 based on address
+```{r}
+enroll <- enroll |> 
+  mutate(zip = if_else(subid == "1448", "94607", zip),
+         address_1 = if_else(subid == "1448", address_2, address_1))
+```
+
+
+```{r}
+zipcode_data <- reverse_zipcode(c(enroll$zip))
+glimpse(zipcode_data)
+```
+
+Check states from zipcode match reported state  
+
+Typos due to shortening of full state name. Fix with correct abbreviations.
+```{r}
+locations <- enroll |> 
+  mutate(state = toupper(str_sub(state, 1, 2))) |> 
+  rename(zipcode = zip) |> 
+  left_join(zipcode_data |> 
+            select(zipcode, state, zip_lat = lat, zip_lon = lng), by = "zipcode") |> 
+  glimpse()
+
+locations |> 
+  filter(toupper(str_sub(state.x, 1, 2)) != state.y) |> 
+  select(subid, state.x, state.y) |> 
+  print(n = Inf)
+```
+
+```{r}
+locations <- locations |> 
+  select(-state.x) |> 
+  rename(state = state.y)
+
+
+tabyl(locations$state) |> nrow()
+```
+
+Still need to check cities and street addresses if getting specific census tract
+
+## Categorize zipcodes as rural vs. urban
+
+Get census tract from full address
+```{r}
+
+```
+
+
+Get census tracts for a zipcode (ZCTAS)   
+
+Checked that all zipcodes are also ZCTAS using is_zcta()
+```{r}
+zipcodes <- enroll |> 
+  pull(zip) |> 
+  unique()
+
+tracts <- zipcodes |> 
+    map(\(zip) get_tracts(zip)) |> # this function uses 2010 census tracts
+  bind_rows()
+
+```
+
+map tracts to urban tracts  
+```{r}
+# census_tracts <- read_delim(here::here("prep/mak_scripts/2020_UA_BLOCKS.txt"), delim = "|", 
+#                             show_col_types = FALSE) |> 
+#   glimpse()
+
+census_tracts <- read_csv(here::here("prep/mak_scripts/2010_UA_BLOCKS.csv"), 
+                            show_col_types = FALSE) |> 
+  select(ua_name, tract) |> 
+  glimpse()
+
+tracts <- tracts |>
+  mutate(tract = as.numeric(TRACT)) |> 
+  mutate(urban = if_else(tract %in% census_tracts$tract, TRUE, FALSE))
+```
+
+
+```{r}
+locations <- locations |> 
+  left_join(tracts |> 
+              rename(zipcode = ZCTA5) |> 
+              select(zipcode, urban) |> 
+              unique(), by = "zipcode")
+```
+
+6 zipcodes contain rural and urban census tracts
+The rest are all urban tracts. 
+
+```{r}
+locations |> 
+  tabyl(urban)
+```
+
+
+
+## Save out tibble
+
+```{r}
+locations |> 
+  write_csv(here::here(path_prep, "locations.csv"))
+```
+
+
+
+

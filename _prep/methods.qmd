@@ -1,0 +1,37 @@
+---
+title: "Methods"
+format: html
+---
+
+## Overview
+
+We intend to evaluate the acceptability and feasibility of personal sensing methods among a national sample of individuals with opioid use disorder. Using free response comments from the participants actively using the personal sensing methods, we will derive common themes related to their unique experience. Acceptability and feasability are important factors to consider when developing mental health interventions. We will be looking at different demographic factors (race, age, income, gender, location?) to see how acceptability differs among these groups. 
+
+## Data Analyses Plan
+
+### Qualitative Data 
+
+Thematic analysis was utilized to code comments from our burden survey. Our code book was designed based on deductive codes informed by prior research and was then iteratively expanded through review of the comments. Codes addressed were: acceptability, sustainability, benefits, trust, usability, and feedback. We also noted if the comments possessed a positive, negative, or neutral/mixed affect. Once the code book was developed, the comments were coded by two independent coders. When coding was completed, a script was written in R to find any discrepancies between the two coding sheets. Any discrepancies found between the two coding sheets were discussed by the coders until they mutually agreed on the codes. 
+
+## Results to Report
+
+I'd like to report the overall percentage of responses for each theme. In addition, I'd like to highlight some of the comments from each theme that really demonstrate the impact of the study. 
+
+
+### Quantitative Data
+
+We will be performing analyses to look at subjective ratings of acceptability (dislike, and interference) and behavioral indicators of acceptabiltiy (compliance, drop out). 
+
+
+### Individul differences
+
+We can expect individuals to have different preferences about which methods they choose to engage in. This becomes an even more important consideration when factors associated with specific groups present barriers to fulfilling of minimum data compliance thresholds (e.g., working 3rd shift, being a single working mom with little time to check her phone, living in an area with weak internet service). We are curious to explore how different demographic factors may impact behavioral and subjective indicators of acceptability and how these factors might be reflected in participant's free response comments. What we learn from the behavioral and subjective indicators of acceptability stemming from different demographic factors will shape the creation of future interventions to ensure everyone is receiving effective treatment. 
+
+Possible analyses:
+
+- compare percentages of each endorsed theme by demographic group (race, age, income, gender) - if possible, could we also include location?
+
+
+## Importance of findings
+
+We are hopeful these results will tell us that digital mental health interventions are viewed as acceptable and feasilble by those with opioid use disorder. 

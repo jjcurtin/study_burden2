@@ -1,0 +1,337 @@
+---
+title: "Quantitative Analyses" 
+author: "Kendra Wyant"
+date: "`r lubridate::today()`"
+format: 
+  html: 
+    embed-resources: true
+    toc: true 
+    toc_depth: 4
+editor_options: 
+  chunk_output_type: console
+--- 
+
+
+
+Purpose: This file is the primary analysis script for the self-report acceptability data (`burden_quant.csv`). 
+
+## Set up
+```{r}
+#| message: false
+
+options(conflicts.policy = "depends.ok")
+library(tidyverse) 
+library(janitor)
+
+devtools::source_url("https://github.com/jjcurtin/lab_support/blob/main/format_path.R?raw=true")
+
+theme_set(theme_classic())
+
+path_burden <- format_path("studydata/risk2/data_processed/burden2")
+```
+
+
+### Data
+
+```{r}
+dem <- read_csv(here::here(path_burden, "demographics.csv"),
+                show_col_types = FALSE) 
+```
+
+```{r}
+burden <- read_csv(here::here(path_burden, "burden_quant.csv"),
+                   show_col_types = FALSE) |> 
+  mutate(daily_update_interfere = factor(daily_update_interfere, 
+                                         levels = c("Strongly agree", "Mildly agree", 
+                                          "Agree and disagree equally", "Mildly disagree", 
+                                          "Strongly disagree")),
+         daily_update_interfere = factor(daily_update_interfere, 
+                                         levels = c("Strongly agree", "Mildly agree", 
+                                          "Agree and disagree equally", "Mildly disagree", 
+                                          "Strongly disagree")),
+         monthly_update_interfere = factor(monthly_update_interfere, 
+                                         levels = c("Strongly agree", "Mildly agree", 
+                                          "Agree and disagree equally", "Mildly disagree", 
+                                          "Strongly disagree")),
+         daily_update_dislike = factor(daily_update_dislike, 
+                                         levels = c("Strongly agree", "Mildly agree", 
+                                          "Agree and disagree equally", "Mildly disagree", 
+                                          "Strongly disagree")),
+         monthly_update_dislike = factor(monthly_update_dislike, 
+                                         levels = c("Strongly agree", "Mildly agree", 
+                                          "Agree and disagree equally", "Mildly disagree", 
+                                          "Strongly disagree")),
+         gps_dislike = factor(gps_dislike, 
+                                         levels = c("Strongly agree", "Mildly agree", 
+                                          "Agree and disagree equally", "Mildly disagree", 
+                                          "Strongly disagree")),
+         sms_phone_logs_dislike = factor(sms_phone_logs_dislike, 
+                                         levels = c("Strongly agree", "Mildly agree", 
+                                          "Agree and disagree equally", "Mildly disagree", 
+                                          "Strongly disagree")),
+         sms_content_dislike = factor(sms_content_dislike, 
+                                         levels = c("Strongly agree", "Mildly agree", 
+                                          "Agree and disagree equally", "Mildly disagree", 
+                                          "Strongly disagree"))) |> 
+  glimpse()
+
+
+burden <- burden |> 
+  left_join(dem, by = "subid")
+```
+
+
+### Interference
+
+```{r}
+interference_plot_data <- burden |> 
+  select(contains("interfere")) |>   
+  pivot_longer(everything(), names_to = "measure", values_drop_na = TRUE) |> 
+  mutate(measure = factor(measure, 
+                          levels = c("daily_update_interfere", "monthly_update_interfere"),
+                          labels = c("Daily update", "Monthly update"))) |> 
+  mutate(value = factor(value, levels = c("Strongly agree", "Mildly agree", 
+                                          "Agree and disagree equally", "Mildly disagree", 
+                                          "Strongly disagree"))) 
+
+
+plot_int <- interference_plot_data |> 
+  ggplot(aes(x = value, y = after_stat(prop), group = measure)) +
+  geom_bar(color = "black", fill = "light grey") +
+  facet_grid(~ measure) +
+  theme_classic() +
+  labs(y = "Proportion",
+       x = NULL,
+       title = "Completing the update interfered with my daily activities") +
+  theme(legend.position = "none",
+        text = element_text(size = 12),
+        axis.text.x = element_text(angle = 45, hjust = 1)) +
+  ylim(0, .7) +
+  geom_vline(aes(xintercept = "Agree and disagree equally"), linetype = "dashed", linewidth = .4, color = "#787575") +
+  geom_vline(aes(xintercept = means), interference_plot_data |> 
+  group_by(measure) |> 
+  summarise(means = mean(as.numeric(value), na.rm = TRUE)), linewidth = .705, color = "black") 
+```
+
+By race
+```{r}
+interference_plot_data_race <- burden |> 
+  select(race_multiple, contains("interfere")) |>   
+  pivot_longer(contains("interfere"), names_to = "measure", values_drop_na = TRUE) |> 
+  mutate(measure = factor(measure, 
+                          levels = c("daily_update_interfere", "monthly_update_interfere"),
+                          labels = c("Daily update", "Monthly update"))) |> 
+  mutate(value = factor(value, levels = c("Strongly agree", "Mildly agree", 
+                                          "Agree and disagree equally", "Mildly disagree", 
+                                          "Strongly disagree"))) 
+
+
+plot_int_race <- interference_plot_data_race |> 
+  filter(race_multiple != "Other") |> 
+  ggplot(aes(x = value, y = after_stat(prop), group = measure)) +
+  geom_bar(color = "black", fill = "light grey") +
+  facet_grid(race_multiple ~ measure) +
+  theme_classic() +
+  labs(y = "Proportion",
+       x = NULL,
+       title = "Completing the update interfered with my daily activities") +
+  theme(legend.position = "none",
+        text = element_text(size = 12),
+        axis.text.x = element_text(angle = 45, hjust = 1)) +
+  ylim(0, 1) +
+  geom_vline(aes(xintercept = "Agree and disagree equally"), linetype = "dashed", linewidth = .4, color = "#787575") +
+  geom_vline(aes(xintercept = means), interference_plot_data_race |> 
+               filter(race_multiple != "Other") |> 
+  group_by(race_multiple, measure) |> 
+  summarise(means = mean(as.numeric(value), na.rm = TRUE)), linewidth = .705, color = "black") 
+```
+
+```{r}
+plot_int
+
+plot_int_race
+```
+
+Proportion of participants who Disagreed with the statement "Completing the update interfered with my daily activities".
+```{r}
+interference_plot_data |> 
+  mutate(value = if_else(value == "Mildly disagree" | value == "Strongly disagree", 
+                         1, 0)) |>
+  group_by(measure) |> 
+  summarise(sum = sum(value),
+            n = n(),
+            prop = sum/n)
+```
+
+
+
+
+#### Correlation and Summary Statistics
+
+Run one sample t-tests to compare each raw data stream mean (for self-reported acceptability about interference) to a neutral score of 0.   
+
+```{r}
+burden_ana <- burden |> 
+  mutate(daily_update_interfere = case_match(daily_update_interfere, 
+                                             "Strongly agree" ~ -2, 
+                                             "Mildly agree" ~ -1, 
+                                             "Agree and disagree equally" ~ 0, 
+                                             "Mildly disagree" ~ 1, 
+                                             "Strongly disagree" ~ 2),
+         monthly_update_interfere = case_match(monthly_update_interfere, 
+                                             "Strongly agree" ~ -2, 
+                                             "Mildly agree" ~ -1, 
+                                             "Agree and disagree equally" ~ 0, 
+                                             "Mildly disagree" ~ 1, 
+                                             "Strongly disagree" ~ 2),
+         daily_update_dislike = case_match(daily_update_dislike, 
+                                             "Strongly agree" ~ -2, 
+                                             "Mildly agree" ~ -1, 
+                                             "Agree and disagree equally" ~ 0, 
+                                             "Mildly disagree" ~ 1, 
+                                             "Strongly disagree" ~ 2),
+         monthly_update_dislike = case_match(monthly_update_dislike, 
+                                             "Strongly agree" ~ -2, 
+                                             "Mildly agree" ~ -1, 
+                                             "Agree and disagree equally" ~ 0, 
+                                             "Mildly disagree" ~ 1, 
+                                             "Strongly disagree" ~ 2),
+         gps_dislike = case_match(gps_dislike, 
+                                             "Strongly agree" ~ -2, 
+                                             "Mildly agree" ~ -1, 
+                                             "Agree and disagree equally" ~ 0, 
+                                             "Mildly disagree" ~ 1, 
+                                             "Strongly disagree" ~ 2),
+         sms_phone_logs_dislike = case_match(sms_phone_logs_dislike, 
+                                             "Strongly agree" ~ -2, 
+                                             "Mildly agree" ~ -1, 
+                                             "Agree and disagree equally" ~ 0, 
+                                             "Mildly disagree" ~ 1, 
+                                             "Strongly disagree" ~ 2),
+         sms_content_dislike = case_match(sms_content_dislike, 
+                                             "Strongly agree" ~ -2, 
+                                             "Mildly agree" ~ -1, 
+                                             "Agree and disagree equally" ~ 0, 
+                                             "Mildly disagree" ~ 1, 
+                                             "Strongly disagree" ~ 2))
+```
+
+
+```{r}
+(int_daily <- broom::tidy(lm(daily_update_interfere ~ 1, data = burden_ana)) |> 
+  mutate(sd = sd(burden_ana$daily_update_interfere, na.rm = TRUE),
+         d = mean(burden_ana$daily_update_interfere, na.rm = TRUE)/sd))
+(int_monthly <- broom::tidy(lm(monthly_update_interfere ~ 1, data = burden_ana)) |> 
+  mutate(sd = sd(burden_ana$monthly_update_interfere, na.rm = TRUE),
+         d = mean(burden_ana$monthly_update_interfere, na.rm = TRUE)/sd))
+```
+
+**Possibly add demographics into model as predictor**
+
+Overall correlations
+```{r}
+burden_ana |> 
+  select(contains("interfere")) |> 
+  cor()
+```
+
+
+ICC
+```{r}
+burden_ana |> 
+  select(contains("interfere")) |> 
+  psych::ICC()
+```
+
+### Dislike
+
+```{r}
+dislike_plot_data <- burden |> 
+  select(contains("dislike")) |>   
+  pivot_longer(everything(), names_to = "measure", values_drop_na = TRUE) |> 
+  mutate(measure = factor(measure, 
+                          levels = c("daily_update_dislike", "monthly_update_dislike",
+                                     "gps_dislike", "sms_phone_logs_dislike", 
+                                     "sms_content_dislike"),
+                          labels = c("Daily update", "Monthly update", "Geolocation",
+                                     "SMS and phone logs", "SMS content"))) |> 
+  mutate(value = factor(value, levels = c("Strongly agree", "Mildly agree", 
+                                          "Agree and disagree equally", "Mildly disagree", 
+                                          "Strongly disagree"))) 
+
+
+plot_dis <- dislike_plot_data |> 
+  ggplot(aes(x = value, y = after_stat(prop), group = measure)) +
+  geom_bar(color = "black", fill = "light grey") +
+  facet_wrap(~ measure, ncol = 3) +
+  theme_classic() +
+  labs(y = "Proportion",
+       x = NULL,
+       title = "I disliked [sensing method]") +
+  theme(legend.position = "none",
+        text = element_text(size = 12),
+        axis.text.x = element_text(angle = 45, hjust = 1)) +
+  ylim(0, .7) +
+  geom_vline(aes(xintercept = "Agree and disagree equally"), linetype = "dashed", linewidth = .4, color = "#787575") +
+  geom_vline(aes(xintercept = means), dislike_plot_data |> 
+  group_by(measure) |> 
+  summarise(means = mean(as.numeric(value), na.rm = TRUE)), linewidth = .705, color = "black") 
+```
+
+```{r}
+#| label: fig-2
+#| fig-cap: "Dislike"
+#| fig-width: 7
+
+
+plot_dis
+```
+
+Proportion of participants who Disagreed with the statement "I disliked [sensing method]".
+```{r}
+dislike_plot_data |> 
+  mutate(value = if_else(value == "Mildly disagree" | value == "Strongly disagree", 
+                         1, 0)) |>
+  group_by(measure) |> 
+  summarise(sum = sum(value),
+            n = n(),
+            prop = sum/n)
+```
+
+
+#### Correlation and Summary Statistics
+
+Run one sample t-tests to compare each raw data stream mean (for self-reported acceptability about interference) to a neutral score of 0.   
+
+```{r}
+(dis_daily <- broom::tidy(lm(daily_update_dislike ~ 1, data = burden_ana)) |> 
+  mutate(sd = sd(burden_ana$daily_update_dislike, na.rm = TRUE),
+         d = mean(burden_ana$daily_update_dislike, na.rm = TRUE)/sd))
+(dis_monthly <- broom::tidy(lm(monthly_update_dislike ~ 1, data = burden_ana)) |> 
+  mutate(sd = sd(burden_ana$monthly_update_dislike, na.rm = TRUE),
+         d = mean(burden_ana$monthly_update_dislike, na.rm = TRUE)/sd))
+(dis_gps <- broom::tidy(lm(gps_dislike ~ 1, data = burden_ana)) |> 
+  mutate(sd = sd(burden_ana$gps_dislike, na.rm = TRUE),
+         d = mean(burden_ana$gps_dislike, na.rm = TRUE)/sd))
+(dis_logs <- broom::tidy(lm(sms_phone_logs_dislike  ~ 1, data = burden_ana)) |> 
+  mutate(sd = sd(burden_ana$sms_phone_logs_dislike, na.rm = TRUE),
+         d = mean(burden_ana$sms_phone_logs_dislike, na.rm = TRUE)/sd))
+(dis_sms <- broom::tidy(lm(sms_content_dislike ~ 1, data = burden_ana)) |> 
+  mutate(sd = sd(burden_ana$sms_content_dislike, na.rm = TRUE),
+         d = mean(burden_ana$sms_content_dislike, na.rm = TRUE)/sd))
+```
+
+Overall correlations
+```{r}
+burden_ana |> 
+  select(contains("dislike")) |> 
+  cor(use = "pairwise.complete.obs")
+```
+
+ICC
+```{r}
+burden_ana |> 
+  select(contains("dislike")) |> 
+  psych::ICC()
+```
+

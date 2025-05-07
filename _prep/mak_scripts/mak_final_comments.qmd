@@ -1,0 +1,107 @@
+---
+title: "Make final comments" 
+author: "Kendra Wyant"
+date: "`r lubridate::today()`"
+format: 
+  html: 
+    embed-resources: true
+    toc: true 
+    toc_depth: 4
+editor_options: 
+  chunk_output_type: console
+---   
+
+## Notes
+
+This script creates a dataframe for the second coder (KW). It is different than the initial file in three ways:
+
+1. It removes video check in codes as these will not be included in the primary analyses due to a lower number of participants using this method.
+
+2. It filters out comments that have less than 3 words. This decision was made based on numerous comments that offered no additional value from coding (e.g., "none", "na", "its fine").  
+
+3. It cross checks Olivia's coding sheet for any additional excluded comments. 
+
+4. It excludes comments from second burden survey (done in updated `mak_burden.qmd` script). See note below:
+
+- Only 12 out of 245 participants completed a second burden survey. Only 2 people with a second survey completed the survey more than a month after their first survey and one of these people had NAs on comments for second survey. Decision to only keep first survey. 
+
+**This file also serves as the final coded comments to be compared across coders 1 and 2 and to be used as inputs into all text analyses.**
+
+
+## Set up
+```{r}
+#| include: false
+
+options(conflicts.policy = "depends.ok")
+library(tidyverse) 
+library(janitor)
+
+devtools::source_url("https://github.com/jjcurtin/lab_support/blob/main/format_path.R?raw=true")
+
+theme_set(theme_classic())
+
+path_prep <- format_path("studydata/risk2/data_processed/prep")
+```
+
+## Read in data
+
+```{r}
+qual_data <- read_csv(here::here(path_prep, "burden_qual.csv"),
+                         show_col_types = FALSE) |> 
+  glimpse()
+
+codes_oc <- read_csv(here::here(path_prep, "qual_data_codes_OC.csv"),
+                     show_col_types = FALSE) |> 
+  glimpse()
+```
+
+
+## Remove rows not to be coded
+
+Remove video comments
+```{r}
+qual_data <- qual_data |> 
+  filter(!data == "video")
+```
+
+Remove Olivia's uncoded comments
+```{r}
+codes_oc_uncoded <- codes_oc |> 
+  filter(is.na(acceptability)) |> 
+  select(subid, user_survey_guid, data) |> 
+  mutate(code = FALSE)
+
+qual_data <- qual_data |> 
+  left_join(codes_oc_uncoded, by = c("subid", "user_survey_guid", "data")) |> 
+  mutate(code = if_else(is.na(code), TRUE, FALSE))
+
+qual_data <- qual_data |> 
+  filter(code)
+```
+
+Apply 3 word requirement on remaining comments
+```{r}
+qual_data <- qual_data |> 
+  mutate(word_count = str_count(answer, '\\w+'))
+
+qual_data |> 
+  summarize(mean(word_count))
+```
+
+```{r}
+qual_data |> 
+  filter(word_count < 3) |> 
+  pull(answer)
+
+qual_data <- qual_data |> 
+  filter(word_count >= 3) |> 
+  select(-c(code, word_count)) |> 
+  glimpse()
+```
+
+
+```{r}
+qual_data |> 
+  write_csv(here::here(path_prep, "final_comments.csv"))
+```
+

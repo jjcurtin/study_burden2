@@ -1,0 +1,167 @@
+---
+title: "Make Disposition" 
+author: "Kendra Wyant"
+date: "`r lubridate::today()`"
+format: 
+  html: 
+    embed-resources: true
+    toc: true 
+    toc_depth: 4
+editor_options: 
+  chunk_output_type: console
+---   
+
+## Notes
+
+This script gets study start and end date, total months on study to create a disposition file for the Olivia's PREP project using the qualitative burden data. 
+
+Decisions:
+
+- Subid 1197 is excluded. They completed 11 burden surveys but had missing values in all fields for all surveys.
+
+- Subid 1257 is excluded. They completed 5 burden surveys but had missing values in all fields for all surveys.
+
+- Only 12 out of 245 participants completed a second burden survey. Only 2 people with a second survey completed the survey more than a month after their first survey and one of these people had NAs on comments for second survey. Decision to only keep first survey. 
+
+- 133 partcicipants have no quant data! Need to look at monthly cleaning script to see if problem introduced or these data are actually missing. We are only using qualitative data at the current moment. Since quant data only really adds a likert scale measure of dislike. 
+
+
+## Set up
+```{r}
+#| include: false
+
+options(conflicts.policy = "depends.ok")
+library(tidyverse) 
+library(janitor)
+library(lubridate)
+
+devtools::source_url("https://github.com/jjcurtin/lab_support/blob/main/format_path.R?raw=true")
+
+theme_set(theme_classic())
+
+path_processed <- format_path("studydata/risk2/data_processed/shared")
+path_prep <- format_path("studydata/risk2/data_processed/prep")
+```
+
+## Read in data
+
+Read in burden data
+```{r}
+burden <- read_csv(here::here(path_prep, "burden_qual.csv"),
+                         show_col_types = FALSE)
+```
+
+Read in daily survey - will use for study start and end date    
+
+Filter to only subids with at least one burden survey
+```{r}
+daily_survey <- read_csv(here::here(path_processed, "survey_daily.csv"),
+                         show_col_types = FALSE) |> 
+  filter(subid %in% burden$subid & status == "complete") |> 
+  glimpse()
+```
+
+
+## Create disposition tibble
+
+```{r}
+daily_survey_start <- daily_survey |> 
+  group_by(subid) |> 
+  arrange(complete_date) |> 
+  slice(1)
+
+daily_survey_end <- daily_survey |> 
+  group_by(subid) |> 
+  arrange(desc(complete_date)) |> 
+  slice(1)
+
+disp <- daily_survey_start |> 
+  select(subid, 
+         start_dttm = complete_date) |> 
+  full_join(daily_survey_end |> 
+              select(subid,
+                     end_dttm = complete_date), by = "subid") |> 
+  ungroup()
+```
+
+convert Unix time stamp to date 
+```{r}
+disp <- disp |> 
+  mutate(start_dttm = as_datetime(start_dttm, tz = "America/Chicago"),
+         end_dttm = as_datetime(end_dttm, tz = "America/Chicago"))
+
+disp <- disp |> 
+  mutate(start_date = as_date(start_dttm),
+         end_date = as_date(end_dttm)) |> 
+  select(-c(start_dttm, end_dttm))
+```
+
+
+calculate months on study
+```{r}
+disp <- disp |> 
+  rowwise() |> 
+  mutate(days_on_study = as.numeric(difftime(end_date, start_date, units = "days")),
+         weeks_on_study = as.numeric(difftime(end_date, start_date, units = "weeks")),
+         months_on_study = days_on_study/30)
+```
+
+
+
+## EDA
+
+`r length(unique(disp$subid))` subids provided qualitative data.   
+
+Average time on study:
+
+Days
+```{r}
+disp |> 
+  ungroup() |> 
+  summarise(mean_days = mean(days_on_study),
+            min_days = min(days_on_study),
+            max_days = max(days_on_study))
+```
+
+```{r}
+disp |> 
+  ggplot(aes(x = days_on_study)) +
+  geom_histogram(bins = 40, color = "black", fill = "light grey")
+```
+
+Participants on study at least 350 days
+```{r}
+disp |> 
+  filter(days_on_study >= 350) |> 
+  nrow() # 121
+```
+
+
+
+Check burden survey date is three months from start date    
+
+
+Burden survey taken between 2-5 months for all participants
+
+```{r}
+disp <- burden |> 
+  group_by(subid) |> 
+  slice(1) |> 
+  mutate(survey_date = as_datetime(complete_date, tz = "America/Chicago")) |> 
+  mutate(survey_date = as_date(survey_date)) |> 
+  select(subid, survey_date) |> 
+  right_join(disp, by = "subid")
+
+disp |> 
+  mutate(survey_start_diff = difftime(survey_date, start_date, units = "days")) |> 
+  tabyl(survey_start_diff)
+```
+
+
+
+Save out tibble
+```{r}
+disp |> 
+  write_csv(file.path(path_prep, "disposition.csv"))
+```
+

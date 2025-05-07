@@ -1,0 +1,10 @@
+---
+title: "Understanding racial and ethnic differences in perceptions of personal sensing for opioid use disorder support"
+author; Olivia Cox
+format: html
+editor: visual
+---
+
+## Abstract
+
+Opioid use disorder (OUD) is a chronic relapsing disease, affecting over 2.1 million people in the US. Unfortunately, there are few long-term supports for marginalized groups with disparities in access to mental health care. Personal sensing, combined with machine learning, has the potential for scalable, long-term relapse risk monitoring. This study examined if personal sensing methods were acceptable among a national sample of people with OUD. Participants (N=200) provided daily and monthly surveys, geolocation data, SMS and call logs, and text message content for up to one year. After using the methods for 3-4 months, participants gave open-ended feedback about experiences with personal sensing methods. Thematic analysis and topic modeling were performed to identify differences in proportion of themes by data type and race/ethnicity. We found significant differences in proportion of comments related to trust, benefits, sustainability, and positive/negative affect between White participants and Black and Hispanic participants. A structural topic model with race/ethnicity and data type as covariates yielded 15 topics. Significant differences between White participants and Black and Hispanic participants were found in 6 topics. This research highlights importance of considering group differences in early stages of treatment design and adapting these tools so that supports are equitable and accessible for all.
