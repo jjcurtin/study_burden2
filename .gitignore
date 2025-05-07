@@ -1,3 +1,5 @@
 .DS_Store
 study_burden2.Rproj
 .Rproj.user
+*.html
+

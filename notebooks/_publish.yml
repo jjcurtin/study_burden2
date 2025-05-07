@@ -1,0 +1,4 @@
+- source: mak_demo_table.qmd
+  quarto-pub:
+    - id: a8e99720-8a7e-4250-ad71-af28eaa06741
+      url: https://kendra-wyant.quarto.pub/demographics-table
