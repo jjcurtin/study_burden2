@@ -1,0 +1,30 @@
+---
+title: "Coding Notes" 
+author: "Kendra Wyant and Olivia Cox"
+date: "`r lubridate::today()`"
+format: 
+  html: 
+    embed-resources: true
+    toc: true 
+    toc_depth: 4
+editor_options: 
+  chunk_output_type: console
+---   
+
+This file will be for us to keep track of notes about how we are defining the different themes, exemplar quotes of the different themes, and questions that come up that we want to discuss with each other.
+
+If we notice additional themes coming up lets also record that here!
+
+# Acceptability
+
+
+# Benefits
+
+
+# Trust
+
+
+# Sustainability
+
+
+# Usability

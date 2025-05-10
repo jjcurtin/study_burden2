@@ -37,8 +37,19 @@ comments <- read_csv(here::here(path_burden, "final_comments.csv"),
                          show_col_types = FALSE) |> 
   glimpse()
 
-codes <- read_csv(here::here(path_burden, "coded_comments.csv"),
-                         show_col_types = FALSE) |> 
+```
+
+
+Add theme cols
+```{r}
+comments |> 
+  mutate(acceptability = "",
+         benefits = "",
+         trust = "",
+         sustainability = "",
+         usability = "") |> 
+  slice(1:100) |> 
+  write_csv(here::here(path_burden, "coded_comments_401_706_kw.csv")) |> 
   glimpse()
 ```
 

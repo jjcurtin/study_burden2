@@ -52,7 +52,7 @@ burden_qual <- read_csv(here::here(path_burden, "burden_qual.csv"),
 
 ```{r}
 burden_long <- burden_qual |> 
-  select(-c(study_start:complete_date)) |> 
+  select(-c(study_start:start_date), -video_checkin_comments) |> 
   pivot_longer(daily_updates_comments:sms_content_comments, 
                names_to = "data",
                values_to = "comment") |> 
@@ -63,7 +63,6 @@ burden_long <- burden_qual |>
 burden_long <- burden_long |> 
   mutate(data = str_remove(data, "_comments"),
          data = case_when(data == "daily_updates" ~ "daily_update",
-                          data == "video_checkin" ~ "video",
                           TRUE ~ data)) |> 
   glimpse()
 ```
@@ -80,13 +79,13 @@ stop_words <- burden_long |>
 
 stop_words <- stop_words |> 
   filter(!comment %in% c("Accountability", "To personal", "Enjoy them", 
-                         "Not preferred", "Its alright", "Its long", 
+                         "Not preferred", "Its long", 
                          "My privqcy", "Like it",  "Privatee", "I understand", 
                          "Great survey", "Easy questions", "Easy calls", 
                          "Kinda weird", "To long", "Necessary", "Its cool", 
-                         "Easy", "It helps", "Helps", "help", "Great  update",
-                         "Positive", "Good", "Helpful", "Good experience", "Feel safe", 
-                         "Verry happy", "Happy", "Reality check", "Its easy", "Nothingbyo hide"))
+                         "Easy", "It helps", "Helps", "help", 
+                         "Helpful", "Good experience", "Feel safe", 
+                         "Reality check", "Its easy", "Nothingbyo hide"))
 ```
 
 Comments to remove
