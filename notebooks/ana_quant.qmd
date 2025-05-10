@@ -77,6 +77,7 @@ burden <- read_csv(here::here(path_burden, "burden_quant.csv"),
 
 
 burden <- burden |> 
+  select(-starts_with("video_checkin")) |> 
   left_join(dem, by = "subid")
 ```
 
@@ -126,30 +127,30 @@ interference_plot_data_race <- burden |>
                                           "Strongly disagree"))) 
 
 
-plot_int_race <- interference_plot_data_race |> 
-  filter(race_multiple != "Other") |> 
-  ggplot(aes(x = value, y = after_stat(prop), group = measure)) +
-  geom_bar(color = "black", fill = "light grey") +
-  facet_grid(race_multiple ~ measure) +
-  theme_classic() +
-  labs(y = "Proportion",
-       x = NULL,
-       title = "Completing the update interfered with my daily activities") +
-  theme(legend.position = "none",
-        text = element_text(size = 12),
-        axis.text.x = element_text(angle = 45, hjust = 1)) +
-  ylim(0, 1) +
-  geom_vline(aes(xintercept = "Agree and disagree equally"), linetype = "dashed", linewidth = .4, color = "#787575") +
-  geom_vline(aes(xintercept = means), interference_plot_data_race |> 
-               filter(race_multiple != "Other") |> 
-  group_by(race_multiple, measure) |> 
-  summarise(means = mean(as.numeric(value), na.rm = TRUE)), linewidth = .705, color = "black") 
+# plot_int_race <- interference_plot_data_race |> 
+#   filter(race_multiple != "Other") |> 
+#   ggplot(aes(x = value, y = after_stat(prop), group = measure)) +
+#   geom_bar(color = "black", fill = "light grey") +
+#   facet_grid(race_multiple ~ measure) +
+#   theme_classic() +
+#   labs(y = "Proportion",
+#        x = NULL,
+#        title = "Completing the update interfered with my daily activities") +
+#   theme(legend.position = "none",
+#         text = element_text(size = 12),
+#         axis.text.x = element_text(angle = 45, hjust = 1)) +
+#   ylim(0, 1) +
+#   geom_vline(aes(xintercept = "Agree and disagree equally"), linetype = "dashed", linewidth = .4, color = "#787575") +
+#   geom_vline(aes(xintercept = means), interference_plot_data_race |> 
+#                filter(race_multiple != "Other") |> 
+#   group_by(race_multiple, measure) |> 
+#   summarise(means = mean(as.numeric(value), na.rm = TRUE)), linewidth = .705, color = "black") 
 ```
 
 ```{r}
 plot_int
 
-plot_int_race
+# plot_int_race
 ```
 
 Proportion of participants who Disagreed with the statement "Completing the update interfered with my daily activities".

@@ -1,0 +1,70 @@
+---
+title: "Make All Figures for Manuscript"
+author: "Kendra Wyant"
+date: "`r lubridate::today()`"
+number-sections: true
+output: 
+  html_document:
+    toc: true 
+    toc_depth: 4
+format:
+  html:
+    embed-resources: true
+    toc: true
+    toc-depth: 4
+editor_options: 
+  chunk_output_type: console
+html-table-processing: none
+---
+
+```{r}
+#| message: false
+#| warning: false
+
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(source("https://github.com/jjcurtin/lab_support/blob/main/format_path.R?raw=true"))
+
+
+theme_set(theme_classic())
+```
+
+
+# Thematic Analysis
+
+Positive and Negative comments
+
+```{r}
+#| label: fig-pos
+#| fig-width: 8
+#| fig-height: 6
+
+knitr::include_graphics(path = here::here("figures/positive.jpeg"))
+```
+
+```{r}
+#| label: fig-neg
+#| fig-cap: " Racial/ethnic group comparisons of affect-related comments by sensing method. Asterisk indicates proportion of comments for racial/ethnic group is significantly different compared to White group (p <.05). Hispanic participants reported fewer positive comments and more negative comments about the monthly update compared to White participants. Black participants reported fewer positive comments about geolocation and more negative comments about SMS content compared to White participants."
+#| fig-width: 8
+#| fig-height: 6
+
+knitr::include_graphics(path = here::here("figures/negative.jpeg"))
+```
+
+Themes
+
+```{r}
+#| label: fig-benefits
+#| fig-width: 8
+#| fig-height: 6
+
+knitr::include_graphics(path = here::here("figures/benefits.jpeg"))
+```
+
+```{r}
+#| label: fig-trust
+#| fig-cap: "Racial/ethnic group comparisons of theme-related comments by sensing method. There were no significant racial/ethnic group differences. Generally, participants reported perceiving more benefits from active sensing methods and reported more concerns related to trust for passive sensing methods"
+#| fig-width: 8
+#| fig-height: 6
+
+knitr::include_graphics(path = here::here("figures/trust.jpeg"))
+```

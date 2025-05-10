@@ -254,8 +254,8 @@ dates_race <- dates |>
 
 Check equal variance
 ```{r}
-library(car)
-car::leveneTest(study_days ~ race, data = dates_race)
+# library(car)
+# car::leveneTest(study_days ~ race, data = dates_race)
 ```
 
 ```{r}
@@ -288,8 +288,7 @@ dates_lapse <- dates |>
 
 Check equal variance
 ```{r}
-library(car)
-car::leveneTest(study_days ~ lapse, data = dates_lapse)
+# car::leveneTest(study_days ~ lapse, data = dates_lapse)
 ```
 
 ```{r}

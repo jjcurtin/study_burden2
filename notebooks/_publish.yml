@@ -1,0 +1,12 @@
+- source: mak_demo_table.qmd
+  quarto-pub:
+    - id: a8e99720-8a7e-4250-ad71-af28eaa06741
+      url: https://kendra-wyant.quarto.pub/demographics-table
+- source: ana_adherence.qmd
+  quarto-pub:
+    - id: 04ea2454-4dc8-4397-bf3f-b8b791fd2a3c
+      url: https://kendra-wyant.quarto.pub/ema-adherence
+- source: ana_quant.qmd
+  quarto-pub:
+    - id: f04ecf11-21d0-49c1-96af-911bf87eef6b
+      url: https://kendra-wyant.quarto.pub/quantitative-analyses
