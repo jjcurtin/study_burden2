@@ -26,37 +26,43 @@ editor_options:
   chunk_output_type: console
 ---
 
-## Introduction
+# Introduction
 
-In 2021, over 80,000 people in the United States died from an opioid overdose. This was the 8th leading cause of death that year, right behind diabetes. 
+- In 2021, over 80,000 people in the United States died from an opioid overdose. This was the 8th leading cause of death that year, right behind diabetes. 
 
-Opioid use disorder is a chronic, relapsing disease, but there are very few long term supports for people in recovery.
+- Opioid use disorder is a chronic, relapsing disease, but there are very few long term supports for people in recovery.
 
-High risk of overdose after initial period of remission. 
+- High risk of overdose after initial period of remission. 
 
-Algorithm-guided risk monitoring that uses personally sensed data and machine learning methods to predict and alert individuals when their relapse risk is high could be a potential target for providing long-term support.  
+- Algorithm-guided risk monitoring that uses personally sensed data and machine learning methods to predict and alert individuals when their relapse risk is high could be a potential target for providing long-term support.  
 
-People can comply with highly effortful sensing methods (e.g., 4 x daily EMA) while using substances [@wyantAcceptabilityPersonalSensing2023; @jonesComplianceEcologicalMomentary2019].
+- People can comply with highly effortful sensing methods (e.g., 4 x daily EMA) while using substances [@wyantAcceptabilityPersonalSensing2023; @jonesComplianceEcologicalMomentary2019].
 
-Previous research has shown personal sensing to be generally acceptable to people with alcohol use disorder [@wyantAcceptabilityPersonalSensing2023]. There is reason to suspect that these findings could differ when generalizing to other substances. For example, individuals may be hesitant to provide self-report information about their use or have their location tracked if they fear legal consequences from relapsing back to use. Additionally, this sample was majority non-Hispanic White and all located in the Madison, WI, USA area.
+- Previous research has shown personal sensing to be generally acceptable to people with alcohol use disorder [@wyantAcceptabilityPersonalSensing2023]. There is reason to suspect that these findings could differ when generalizing to other substances. For example, individuals may be hesitant to provide self-report information about their use or have their location tracked if they fear legal consequences from relapsing back to use. Additionally, this sample was majority non-Hispanic White and all located in the Madison, WI, USA area.
 
-Like most health and mental health conditions, treatment and outcome disparities among underrepresented groups are prevalent with opioid use disorder.
+- Like most health and mental health conditions, treatment and outcome disparities among underrepresented groups are prevalent with opioid use disorder.
 
-For algorithm-guided risk monitoring to be a viable support option, it is important that it is perceived to be equally acceptable across different groups of people. Without this, it is possible that providing a support tool only acceptable to a majority group, could widen existing disparities.
+- For algorithm-guided risk monitoring to be a viable support option, it is important that it is perceived to be equally acceptable across different groups of people. Without this, it is possible that providing a support tool only acceptable to a majority group, could widen existing disparities.
 
-It is expected that individuals will have different preferences about which sensing methods are most acceptable. However, we may see general patterns in preferences based on demographic and group characteristics. For example, working 3rd shift, being a single working mom with little time to check her phone, or living in an area with weak internet service could all present barriers to fulfilling minimum data adherence thresholds needed for self-report sensing data. Trust and related privacy concerns about providing sensitive sensed data like geolocation and text message content may be greater concern in historically marginalized groups that have experienced systemic racism and other stigma [@marwickPrivacyMarginsUnderstanding2018]. These individuals may find it more difficult to achieve privacy in their daily lives, and they may hold very different perspectives on the costs vs. benefits of surveillance in the context of personal sensing or more generally. 
+- It is expected that individuals will have different preferences about which sensing methods are most acceptable. However, we may see general patterns in preferences based on demographic and group characteristics. For example, working 3rd shift, being a single working mom with little time to check her phone, or living in an area with weak internet service could all present barriers to fulfilling minimum data adherence thresholds needed for self-report sensing data. Trust and related privacy concerns about providing sensitive sensed data like geolocation and text message content may be greater concern in historically marginalized groups that have experienced systemic racism and other stigma [@marwickPrivacyMarginsUnderstanding2018]. These individuals may find it more difficult to achieve privacy in their daily lives, and they may hold very different perspectives on the costs vs. benefits of surveillance in the context of personal sensing or more generally. 
 
-This mixed-methods study explores the acceptability and feasibility of personal sensing methods in a national sample of patients with opioid use disorder. It examines overall feasibility related to adherence and retention for providing personally sensed data for up to twelve months. It also uses two complementary qualitative methods to assess participant feedback on their experiences with various sensing methods after using the methods for 3-4 months. Finally, this study specifically assesses differences in patient adherence and feedback by sensing method and four demographic characteristics (race/ethnicity, socioeconomic status, sex at birth, and location). 
+- This mixed-methods study explores the acceptability and feasibility of personal sensing methods in a national sample of patients with opioid use disorder. It examines overall feasibility related to adherence and retention for providing personally sensed data for up to twelve months. It also uses two complementary qualitative methods to assess participant feedback on their experiences with various sensing methods after using the methods for 3-4 months. Finally, this study specifically assesses differences in patient adherence and feedback by sensing method and four demographic characteristics (race/ethnicity, socioeconomic status, sex at birth, and location). 
 
-We hope to highlight the importance of stakeholder engagement from the beginning (i.e., before an intervention is developed) and provide important considerations about the strengths, challenges, and barriers to implementing algorithm-guided risk monitoring.
+- We hope to highlight the importance of stakeholder engagement from the beginning (i.e., before an intervention is developed) and provide important considerations about the strengths, challenges, and barriers to implementing algorithm-guided risk monitoring.
 
 
 
-## Methods
+# Methods
 
 - We recruited individuals in treatment for Opioid Use Disorder across the United States. Individuals were asked to download a digital therapeutic onto their smartphones and provide personal sensing data for up to one year. Specifically, they completed a brief daily survey, a longer monthly survey, and gave us access to sensed geolocation, SMS and phone call logs, and text message content. 
 
-- Participants were asked to provide open ended feedback on their experience with each sensing method at approximately 3-4 months into the study with the prompt - “Please share any positive or negative comments you have about the Sensing Method.”
+## Measures
+
+### Participant Experience Questionannaire
+
+- Participants were asked to provide open ended feedback on their experience with each sensing method at approximately 3-4 months into the study with the prompt - “Please share any positive or negative comments you have about [the Sensing Method].”
+
+## Data Analysis Plan
 
 ### Quantitative Analyses
 overall EMA compliance and disposition
@@ -65,38 +71,29 @@ overall EMA compliance and disposition
 - Use number of lapses as moderator? (is it harder to comply behaviorally when lapsing?)
 
 ### Qualitative Analyses
-We used two complementary analytic methods to analyze participants’ comments about the personal sensing methods. 
-
-#### Thematic Analyses
-The first method was thematic analysis. This is a systematic approach for identifying, analyzing, and reporting patterns or themes within qualitative data.  It is top-down in that it uses domain expertise to create a codebook of thematic categories driven by the aims and questions of the research being conducted. As coding is underway the codebook iteratively expands to include additional themes.
+We used thematic analysis to analyze participants’ comments about the personal sensing methods. This is a systematic approach for identifying, analyzing, and reporting patterns or themes within qualitative data.  It is top-down in that it uses domain expertise to create a codebook of thematic categories driven by the aims and questions of the research being conducted. As coding is underway the codebook iteratively expands to include additional themes.
 
 Thematic analysis was utilized to code comments from our burden survey. Our code book was designed based on deductive codes informed by prior research and was then iteratively expanded through review of the comments. Codes addressed were: acceptability, sustainability, benefits, trust, usability, and feedback. We also noted if the comments possessed a positive, negative, or neutral/mixed affect. Once the code book was developed, the comments were coded by two independent coders. When coding was completed, a script was written in R to find any discrepancies between the two coding sheets. Any discrepancies found between the two coding sheets were discussed by the coders until they mutually agreed on the codes. 
     
-#### Topic Modeling    
-The second method was topic modeling. This approach uses Natural Language Processing and unsupervised machine learning methods to identify clusters of words that co-occur frequently together. It is a bottom-up approach in that thematic categories are created from the data without any top-down interference. This is a promising method, particularly when looking at demographic differences because themes we may not have thought of can emerge and inform us.
-
-We used Structural topic modeling. This acts differently from more traditional topic modeling approaches in that the document-level metadata can be added into the modeling process. We used race and data type as covariates and saw how the content of the topics might shift from one group to the next. We looked at the top words defined by FREX, a metric that evaluates word frequency and exclusivity to a topic.
 
 
-## Results
 
-### Participant Characteristics
-A total of 336 participants enrolled in our study and provided at least one month of data. [@tbl-demo] presents the demographic and clinical characteristics of these participants. 
+# Results
+## Participants
+A total of 336 participants enrolled in our study and provided at least one month of EMA data. [@tbl-demo] presents the demographic and clinical characteristics of these participants. 
 
 {{< embed notebooks/mak_demo_table.qmd#tbl-demo >}} 
 
+## Adherence
 
-
-### Adherence
-
-#### Participation
-A total of 336 participants enrolled in our study and provided at least one month of EMA data. @fig-1 shows participant attrition over 12 months. There was no significant difference in mean days on study between participants who were non-Hispanic White (*N* = 247, *M* = 299, *SD* = 109) and participants who were not White (*N* = 89, *M* = 284, *SD* = 112), *t*(334) = -1.11, *p* = .27. There was no significant difference in mean days on study between participants who reported a lapse (*N* = 1 37, *M* = 296, *SD* = 107) and those who did not report a lapse (*N* = 199, *M* = 294, *SD* = 112) while on study, *t*(334) = -0.19, *p* = .85.
+### Participation
+@fig-1 shows participant attrition over 12 months. There was no significant difference in mean days on study between participants who were non-Hispanic White (*N* = 247, *M* = 299, *SD* = 109) and participants who were not White (*N* = 89, *M* = 284, *SD* = 112), *t*(334) = -1.11, *p* = .27. There was no significant difference in mean days on study between participants who reported a lapse (*N* = 1 37, *M* = 296, *SD* = 107) and those who did not report a lapse (*N* = 199, *M* = 294, *SD* = 112) while on study, *t*(334) = -0.19, *p* = .85.
 
 {{< embed notebooks/ana_adherence.qmd#fig-1 >}}
 
 
 
-#### Monthly and Daily Updates
+### Monthly and Daily Updates
 The overall adherence for the monthly updates was extremely high. Participants completed 96% of the monthly updates. 
 
 The overall adherence for the daily updates was 72%. This rate is consistent with other shorter-term EMA protocols in substance use populations (Average adherence is 75% [@jonesComplianceEcologicalMomentary2019]). @fig-2 shows the overall adherence rates for the daily update by month on study. 
@@ -107,17 +104,17 @@ There was no significant difference in daily update adherence rates between part
 {{< embed notebooks/ana_adherence.qmd#fig-2 >}}
 
 
-### Participant Experience Questionannaire Quantitative Results
+## Participant Experience Questionannaire Quantitative Results
 247 participants provided at least four months of data and completed the participant experience questionnaire. These participants were included in following analyses.
 
 
-#### Interference
+### Interference
 84% of participants (*N* = 207/247) disagreed (i.e., endorsing "Strongly disagree" or "Mildly disagree") with the statement "Completing the daily update interfered with my daily activities". 79% of participants (*N* = 196/247) disagreed with the statement "Completing the monthly update interfered with my daily activities". We provide histograms of participant responses in the supplement.   
 
 An ICC (type 3) showed that, on average, interference ratings were moderately consistent across the two updates, ICC = .50, 95% CI = [.40 - .59].
 
 
-#### Dislike
+### Dislike
 85% of participants (*N* = 211/247) disagreed (i.e., endorsing "Strongly disagree" or "Mildly disagree") with the statement "I disliked completing the daily update". 73% of participants (*N* = 179/246) disagreed with the statement "I disliked completing the monthly update". Fewer participants disagreed with the statement "I disliked [sensing method]" for geolocation (65%; *N* = 161/247), SMS and phone logs (64%; *N* = 158/246), and SMS content (64%; *N* = 156/245). As a result we saw an increase in responses endorsing a neutral stance toward these passive sensing methods ("Agree and disagree equally"). We provide histograms of participant responses by sensing method in the supplement.   
 
 An ICC (type 3) showed that, on average, dislike ratings were moderately consistent across sensing methods, ICC = .48, 95% CI = [.42 - .54].
@@ -125,10 +122,8 @@ An ICC (type 3) showed that, on average, dislike ratings were moderately consist
 
 
 
-### Participant Experience Questionannaire Qualitative Results
+## Participant Experience Questionannaire Qualitative Results
 
-
-#### Thematic Analysis
 <!-- - We began with a total of 1,356 comments. The first coder went through and identified any irrelevant comments, comments that were two words or less, while coding independently. After the excluding process, there were 647 comments in total retained and coded by both independent coders. For the results, we’ll report on the overall percentage of comments in each them and separately by data type and also differences in proportion of themes by race/ethnicity. -->
 
 <!-- - We found a significant difference in the proportion of positive and negative comments by Hispanic participants compared to White participants for the monthly update. -->
@@ -143,10 +138,6 @@ An ICC (type 3) showed that, on average, dislike ratings were moderately consist
 
 <!-- - And going back to the negative comments about the monthly update in the Hispanic group. This plots on the sustainability of the methods offer additional insight. The only sensing method people in the Hispanic group made sustainability comments was about the monthly update. And these comments were much more frequent than the other groups. This suggests that perhaps the longer length of the survey or something inherent in the method was making it difficult for people in this group to complete it each month. -->
 
-#### Topic Modeling
-<!-- - We found there were 15 unique topics and 6 significantly differed by race/ethnicity. -->
-
-<!-- - no sig differences by gender or income -->
 
 
 ## Discussion
