@@ -1,8 +1,4 @@
-- source: results.qmd
-  quarto-pub:
-    - id: 2d00c0e5-b14e-457c-be7e-e124d8d1a032
-      url: https://kendra-wyant.quarto.pub/results
 - source: index.qmd
   quarto-pub:
-    - id: eb365475-fef0-4cba-85ea-de795fbc0fa6
+    - id: 4bcdedb2-0cb6-47ba-ac01-f0a48c286f89
       url: https://kendra-wyant.quarto.pub/understanding-patient-experiences-with-personsal-sensing-in-a-national-sample-of-people-with-opioid-use-disorder

@@ -54,13 +54,62 @@ editor_options:
 
 # Methods
 
-- We recruited individuals in treatment for Opioid Use Disorder across the United States. Individuals were asked to download a digital therapeutic onto their smartphones and provide personal sensing data for up to one year. Specifically, they completed a brief daily survey, a longer monthly survey, and gave us access to sensed geolocation, SMS and phone call logs, and text message content. 
+## Participants
+We recruited XX<!--update with starting sample--> participants in early recovery from opioid use disorder from across the United States. We recruited through national digital advertising and collaborations with treatment providers at MOUD clinics. Our recruitment strategy was designed to create a diverse sample with respect to demographics (gender, age, race, and ethnicity), and geographic location (urban and rural). We required participants:
+
+- were age 18 or older,
+- could read, write, and speak in English,
+- were enrolled in and adherent with an MOUD program for at least 1 month but no longer than 12 months or enrolled in or recently completed a day treatment program, and
+- had an Android smartphone with an active data plan.  
+
+We did not exclude participants for comorbid substance use or other psychiatric disorders. 
+
+## Procedure
+Participants completed three video or phone visits over approximately 12 months. During the enrollment visit, study staff obtained written informed consent and collected demographic information. They walked participants through how to download the Smart Technology for Addiction Recovery (STAR) study app, provided a set of video tutorials to learn how to use the app, and instructed participants to complete the intake survey within the app. The STAR app was developed by the UW Madison Center for Health Enhancement Systems Studies and used for all data collection. Within the app participants could control their data sharing options, monitor completed study tasks, receive reminder notifications about tasks, message staff, and access STAR's suite of resources and tools for people in recovery from AUD [@gustafsonSmartphoneApplicationSupport2014]. Enrolled participants met with study staff one week later to troubleshoot technical issues. At the end of the study enrollment period participants met briefly with study staff for a debriefing session. While on study, participants were expected to complete daily surveys, monthly surveys, and share cellular communicaition logs, SMS text message content and geolocation sensing data. All procedures were approved by the University of Wisconsin-Madison Institutional Review Board (Study #2019-0656). 
+
+## Compensation
+Participants were compensated \$20 for completing the onboarding phone visit, \$20 watching STAR video tutorials, \$10 for completing the troubleshooting phone visit one week later and \$10 for completing the debriefing visit at the end of the study. Participants were compensated for all study tasks completed. They were paid \$10 per month for submitting the monthly survey. They were paid up to \$15 per month for completing the daily surveys. They received \$0.25 per survey plus an additional \$3.70 for completing at least 12 surveys in the first half of the month and an additional \$3.70 for completing at least 12 surveys in the second half of the month (total range of \$14.40 - \$15.15). They also received \$5 per month for sharing geolocation data and \$10 per month for sharing cellular communication logs and text message content. Participants were also paid \$50 per month to offset the cost of maintaining a cellphone data plan. 
+
+## Sensing Methods
+
+### Daily Survey
+Participants completed a brief (1-2 minute) 16-item daily survey each day on study through the STAR app. The daily survey became available in the app at 5:00 AM CST each morning and participants had 24 hours to complete it. Participants could enable push notifications for reminder prompts to complete the survey. Participants reported opioid lapses on the first daily survey item. If participants responded "yes" to the question "Have you used any opioids for non-medical reasons that you have not yet reported?", they were prompted to select the day(s) and time(s) of the lapse(s). Times were reported in 6-hour increments (12:00am–5:59am, 6:00am–11:59am, 12:00pm–5:59pm, 6:00pm–11:59pm). On the remaining 15 items, participants reported any other drugs that they had used, whether they took their MOUD as prescribed in the past 24 hours, and rated the maximum intensity of recent (i.e., in the past 24 hours) experiences of pain, craving, risky situations, stressful events, and pleasant events. They also rated their sleep and how depressed, angry, anxious, relaxed, and happy they have felt in the past 24 hours. Lastly, participants responded to 2 future-facing items that asked about participants’ motivation and confidence to continue to avoid using opioids for non-medical reasons over the next week. 
+
+### Monthly Survey
+
+
+### Geolocation
+The STAR app passively recorded participants’ time-stamped geolocations (i.e., latitude and longitude) every 1.5-15 minutes, depending on their movement. We augmented the geolocation data with self-reported subjective context. On each monthly survey participants were asked 6 questions about frequently visited locations (i.e., locations that the participant spent more than 3 minutes on 2 or more times in a month) from the previous month. Participants were asked to describe the type of place, what they typically do there, the general frequency of pleasant and unpleasant experiences at the location, and the extent to which spending time there helps or harms their recovery. 
+
+### Cellular Communication Logs and SMS Text Message Content
+We collected cellular communication logs that included metadata about smartphone communications involving both SMS text messages and phone calls. For each communication entry, these logs include the phone number of the other party, the type of call or message (ie, incoming, outgoing, missed, or rejected), the name of the party if listed in the phone contacts, the date and time the message or call occurred, whether the log entry was read (SMS text messages only), and the duration of the call (voice calls only). For SMS text messages we also recorded the content of all incoming and outgoing messages.
+
 
 ## Measures
 
+### Individual Differences
+We collected self-report information about demographics (age, gender, sexual orientation, race, ethnicity, education, employment, and income). Zip codes from participants' reported home addresses were linked to Rural–Urban Commuting Area (RUCA) codes to characterize the rural–urban status of their residences [@economicresearchserviceusdepartmentofagricultureRuralUrbanCommutingArea]. These variables were collected to characterize our sample. Demographic variables with some evidence for influencing OUD treatment access and clinical outcomes and/or carrying general societal stigma (gender, race/ethnicity, income, sexual orientation, and geographic location) were used to perform subgroup analyses on acceptability ratings [@pinedoCurrentReexaminationRacial2019; @kilaruIncidenceTreatmentOpioid2020; @olfsonHealthcareCoverageService2022; @greenfieldSubstanceAbuseTreatment2007; @martinNeedReceiptSubstance2022; @lofaroRuralUrbanDifferences2025; @xinExploringIntersectionalityStigma2023]. <!--Need to decide if using all or some of these: definitely want to use race/ethnicity and rural/urban-->
+
+We collected information about OUD history to characterize OUD severity and recovery stability across our sample. These measures included self-reported Diagnostic and Statistical Manual of Mental Disorders, Fifth Edition OUD symptoms [@americanpsychiatricassociationDiagnosticStatisticalManual2022], past month opioid use, past month residential treatment for OUD, past month receipt of psychiatric medication, preferred opioid, preferred route of administration, and lifetime history of overdose.
+
 ### Participant Experience Questionannaire
 
-- Participants were asked to provide open ended feedback on their experience with each sensing method at approximately 3-4 months into the study with the prompt - “Please share any positive or negative comments you have about [the Sensing Method].”
+The participant experience questionnaire was appended to the monthly survey so that participants completed it at approximately 3-4 months into the study. On the questionnaire participants responded to three items about their experience with each sensing method depending on whether the sensing method required active effort (i.e., daily survey and monthly survey) or was passively collected (i.e., geolocation, cellular communication logs, and SMS text message content). 
+
+For the active methods, participants rated how much they agreed with two statements using 5-point bipolar scales (strongly disagree, disagree, undecided, agree, or strongly agree). The third item was an open-ended prompt. Specifically participants responded to:
+
+1. Completing the [*sensing method*] interfered with my daily activities.
+
+2. I disliked completing the [*sensing method*].
+
+3. Please share any positive or negative comments you have about the [*sensing method*].
+
+For the passive methods, we did not inquire about interference given that they required no active effort from the participant to provide the data once the app was installed and sharing permissions were turned on. For these methods participants responded to:
+
+1. I disliked sharing my [*sensing method*].
+
+2. Please share any positive or negative comments you have about sharing your [*sensing method*].
+
 
 ## Data Analysis Plan
 
@@ -71,9 +120,7 @@ overall EMA compliance and disposition
 - Use number of lapses as moderator? (is it harder to comply behaviorally when lapsing?)
 
 ### Qualitative Analyses
-We used thematic analysis to analyze participants’ comments about the personal sensing methods. This is a systematic approach for identifying, analyzing, and reporting patterns or themes within qualitative data.  It is top-down in that it uses domain expertise to create a codebook of thematic categories driven by the aims and questions of the research being conducted. As coding is underway the codebook iteratively expands to include additional themes.
-
-Thematic analysis was utilized to code comments from our burden survey. Our code book was designed based on deductive codes informed by prior research and was then iteratively expanded through review of the comments. Codes addressed were: acceptability, sustainability, benefits, trust, usability, and feedback. We also noted if the comments possessed a positive, negative, or neutral/mixed affect. Once the code book was developed, the comments were coded by two independent coders. When coding was completed, a script was written in R to find any discrepancies between the two coding sheets. Any discrepancies found between the two coding sheets were discussed by the coders until they mutually agreed on the codes. 
+We used thematic analysis to analyze participants’ open-ended comments about the personal sensing methods. This is a systematic approach for identifying, analyzing, and reporting patterns or themes within qualitative data.  It is top-down in that it uses domain expertise from the literature to create a codebook of thematic categories driven by the aims and questions of the research being conducted. As coding is underway the codebook iteratively expands to include additional themes. We coded responses on the following themes: acceptability, sustainability, benefits, trust, usability, and feedback. We also coded valence for each theme (positive, negative, neutral). Once the code book was developed, the comments were coded by two independent coders. A third coder was brought in when discrepancies arose and these cases were discussed to arive at a resolution.
     
 
 
