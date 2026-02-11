@@ -11,23 +11,27 @@ editor_options:
   chunk_output_type: console
 ---   
 
+
+
 ## Notes
 
 This script creates a dataframe of comments to be coded.
 
-- It filters out one word comments that equate to NA (e.g., None, No, Na)
+- It filters out comments that are less than 3 words long and equate to NA (e.g., None, No, Na, No comments)
 
 - Uses all available comments from all participants who completed burden survey (N = 247)
 
 - Only produces first set of comments (i.e., from burden survey around month 3-4)
 
-- results in 859 comments from 211 participants
+- results in 727 comments from 206 participants
 
 
 **These final comments will be compared across coders 1 and 2 and to be used as inputs into all text analyses.**
 
 
 ## Set up
+
+
 ```{r}
 #| include: false
 
@@ -42,7 +46,11 @@ theme_set(theme_classic())
 path_burden <- format_path("risk2/data_processed/burden2")
 ```
 
+
+
 ## Read in data
+
+
 
 ```{r}
 burden_qual <- read_csv(here::here(path_burden, "burden_qual.csv"),
@@ -51,9 +59,13 @@ burden_qual <- read_csv(here::here(path_burden, "burden_qual.csv"),
 ```
 
 
+
+
 ### Format data
 
 Removing video checkin comments because most people didnt do these and were confused by this question 
+
+
 
 ```{r}
 burden_long <- burden_qual |> 
@@ -74,20 +86,34 @@ burden_long <- burden_long |>
 
 
 
+
+
 ### Filter out stop words that equate to NA or no comment
 
-Look at comments less than 2 words to generate stop word dictionary
+Look at comments less than 3 words to generate stop word dictionary
+
+
 ```{r}
 stop_words <- burden_long |> 
   mutate(word_count = str_count(comment, '\\w+')) |> 
-  filter(word_count < 2)
+  filter(word_count < 3)
 
 stop_words <- stop_words |> 
-  filter(!comment %in% c("Accountability", "Privatee", "Necessary", 
-                         "Easy", "Helps", "Help", "Helpful", "Positive"))
+  filter(!comment %in% c("Accountability", "To personal", "Enjoy them", 
+                         "Not preferred", "Its long", 
+                         "My privqcy", "Like it",  "Privatee", "I understand", 
+                         "Great survey", "Easy questions", "Easy calls", 
+                         "Kinda weird", "To long", "Necessary", "Its cool", 
+                         "Easy", "It helps", "Helps", "help", 
+                         "Helpful", "Good experience", "Feel safe", 
+                         "Reality check", "Its easy", "Nothingbyo hide"))
 ```
 
+
+
 Comments to remove
+
+
 ```{r}
 stop_words |> 
   pull(comment)
@@ -96,7 +122,11 @@ burden_long <- burden_long |>
   filter(!is.na(comment) & !comment %in% stop_words$comment)
 ```
 
+
+
 Other comments to remove - based on EDA and previous coding iterations
+
+
 ```{r}
 # burden_long <- burden_long |> 
 #   filter(!comment %in% c("Nothing at this time", "Same as previous answer", 
@@ -115,6 +145,8 @@ Other comments to remove - based on EDA and previous coding iterations
 
 
 
+
+
 ### Final counts
 
 Total comments: `r nrow(burden_long)`
@@ -124,6 +156,8 @@ Unique subids: `r length(unique(burden_long$subid))`
 
 
 ### Save out data
+
+
 ```{r}
 burden_long |> 
   write_csv(here::here(path_burden, "final_comments.csv"))

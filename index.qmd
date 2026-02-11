@@ -55,7 +55,7 @@ editor_options:
 # Methods
 
 ## Participants
-We recruited XX<!--update with starting sample--> participants in early recovery from opioid use disorder from across the United States. We recruited through national digital advertising and collaborations with treatment providers at MOUD clinics. Our recruitment strategy was designed to create a diverse sample with respect to demographics (gender, age, race, and ethnicity), and geographic location (urban and rural). We required participants:
+We recruited 335<!--Update to enrollment number once finalized--> participants in early recovery from opioid use disorder from across the United States. We recruited through national digital advertising and collaborations with treatment providers at MOUD clinics. Our recruitment strategy was designed to create a diverse sample with respect to demographics (gender, age, race, and ethnicity), and geographic location (urban and rural). We required participants:
 
 - were age 18 or older,
 - could read, write, and speak in English,
@@ -73,22 +73,25 @@ Participants were compensated \$20 for completing the onboarding phone visit, \$
 ## Sensing Methods
 
 ### Daily Survey
-Participants completed a brief (1-2 minute) 16-item daily survey each day on study through the STAR app. The daily survey became available in the app at 5:00 AM CST each morning and participants had 24 hours to complete it. Participants could enable push notifications for reminder prompts to complete the survey. Participants reported opioid lapses on the first daily survey item. If participants responded "yes" to the question "Have you used any opioids for non-medical reasons that you have not yet reported?", they were prompted to select the day(s) and time(s) of the lapse(s). Times were reported in 6-hour increments (12:00am–5:59am, 6:00am–11:59am, 12:00pm–5:59pm, 6:00pm–11:59pm). On the remaining 15 items, participants reported any other drugs that they had used, whether they took their MOUD as prescribed in the past 24 hours, and rated the maximum intensity of recent (i.e., in the past 24 hours) experiences of pain, craving, risky situations, stressful events, and pleasant events. They also rated their sleep and how depressed, angry, anxious, relaxed, and happy they have felt in the past 24 hours. Lastly, participants responded to 2 future-facing items that asked about participants’ motivation and confidence to continue to avoid using opioids for non-medical reasons over the next week. 
+Participants completed a brief (1-2 minute) 16-item survey each day on study through the STAR app. The daily survey became available in the app at 5:00 AM CST each morning and participants had 24 hours to complete it. Participants could enable push notifications for reminder prompts to complete the survey. Participants reported opioid lapses on the first daily survey item. If participants responded "yes" to the question "Have you used any opioids for non-medical reasons that you have not yet reported?", they were prompted to select the day(s) and time(s) of the lapse(s). Times were reported in 6-hour increments (12:00am–5:59am, 6:00am–11:59am, 12:00pm–5:59pm, 6:00pm–11:59pm). On the remaining 15 items, participants reported any other drugs that they had used, whether they took their MOUD as prescribed in the past 24 hours, and rated the maximum intensity of recent (i.e., in the past 24 hours) experiences of pain, craving, risky situations, stressful events, and pleasant events. They also rated their sleep and how depressed, angry, anxious, relaxed, and happy they have felt in the past 24 hours. Lastly, participants responded to 2 future-facing items that asked about participants’ motivation and confidence to continue to avoid using opioids for non-medical reasons over the next week. 
 
 ### Monthly Survey
+Particpants completed one longer (20-30 minute) survey each month through the STAR app. The first monthly survey became available immediately after participants enrolled in the study. The first survey measured individual trait and clinical characteristics. Specifically, it measured demographics, lifetime substance use history [@whoassistworkinggroupAlcoholSmokingSubstance2002], opioid treatment history, Diagnostic and Statistical Manual of Mental Disorders, Fifth Edition, OUD diagnostic criteria [@americanpsychiatricassociationDiagnosticStatisticalManual2022], distress tolerance [@simonsDistressToleranceScale2005], pain catastrophizing [@crombezChildVersionPain2003; @sullivanPainCatastrophizingScale1995], personality traits relevant to psychopathology [@gomezPersonalityInventoryDSM2020; @kruegerInitialConstructionMaladaptive2012], adverse childhood experiences [@murphyAdverseChildhoodExperiences2014], and trauma experience [@frissaChallengesRetrospectiveAssessment2016]. 
 
+All monthly surveys (first and later) measured dynamic risk factors, including changes in life circumstances (e.g., employment status and living situation), social connectedness [@sherbourneMOSSocialSupport1991], romantic relationship quality [@hendrickGenericMeasureRelationship1988], psychiatric symptoms [@eisenBASISDevelopmentSelfreport1986], pain [@dautDevelopmentWisconsinBrief1983; @krebsDevelopmentInitialValidation2009], stress [@cohenGlobalMeasurePerceived1983], quality of life [@skevingtonWorldHealthOrganizations2004], substance use [@whoassistworkinggroupAlcoholSmokingSubstance2002], recovery satisfaction, motivation, and confidence, and questions about treatment use, adherence, and perceived efficacy [@moriskyPredictiveValidityMedication2008; @voilsInitialValidationSelfreport2012].
+
+Lastly, at the end of each later survey (i.e., excluding the first) we asked additional questions about the intrapersonal and subjective context associated with people and places with which the participant has frequent contact or visits in the previous month (see Geolocation and Cellular Communication Logs and SMS Text Message Content). 
 
 ### Geolocation
 The STAR app passively recorded participants’ time-stamped geolocations (i.e., latitude and longitude) every 1.5-15 minutes, depending on their movement. We augmented the geolocation data with self-reported subjective context. On each monthly survey participants were asked 6 questions about frequently visited locations (i.e., locations that the participant spent more than 3 minutes on 2 or more times in a month) from the previous month. Participants were asked to describe the type of place, what they typically do there, the general frequency of pleasant and unpleasant experiences at the location, and the extent to which spending time there helps or harms their recovery. 
 
 ### Cellular Communication Logs and SMS Text Message Content
-We collected cellular communication logs that included metadata about smartphone communications involving both SMS text messages and phone calls. For each communication entry, these logs include the phone number of the other party, the type of call or message (ie, incoming, outgoing, missed, or rejected), the name of the party if listed in the phone contacts, the date and time the message or call occurred, whether the log entry was read (SMS text messages only), and the duration of the call (voice calls only). For SMS text messages we also recorded the content of all incoming and outgoing messages.
+We collected cellular communication logs that included metadata about smartphone communications involving both SMS text messages and phone calls. For each communication entry, these logs include the phone number of the other party, the type of call or message (ie, incoming, outgoing, missed, or rejected), the name of the party if listed in the phone contacts, the date and time the message or call occurred, whether the log entry was read (SMS text messages only), and the duration of the call (voice calls only). For SMS text messages we also recorded the content of all incoming and outgoing messages. On each monthly survey participants were asked 5 questions about contacts with whom participants frequently communicated in the previous month (i.e., at least 2 calls 2 minutes or longer in duration, 1 call 15 minutes or longer in duration, or 4 SMS text messages). Participants were asked to describe the nature of their relationship with the contact, the general frequency of pleasant and unpleasant interactions associated with the person, and the extent to which interactions with the contact support or undermine their recovery.
 
-
-## Measures
+## Measures 
 
 ### Individual Differences
-We collected self-report information about demographics (age, gender, sexual orientation, race, ethnicity, education, employment, and income). Zip codes from participants' reported home addresses were linked to Rural–Urban Commuting Area (RUCA) codes to characterize the rural–urban status of their residences [@economicresearchserviceusdepartmentofagricultureRuralUrbanCommutingArea]. These variables were collected to characterize our sample. Demographic variables with some evidence for influencing OUD treatment access and clinical outcomes and/or carrying general societal stigma (gender, race/ethnicity, income, sexual orientation, and geographic location) were used to perform subgroup analyses on acceptability ratings [@pinedoCurrentReexaminationRacial2019; @kilaruIncidenceTreatmentOpioid2020; @olfsonHealthcareCoverageService2022; @greenfieldSubstanceAbuseTreatment2007; @martinNeedReceiptSubstance2022; @lofaroRuralUrbanDifferences2025; @xinExploringIntersectionalityStigma2023]. <!--Need to decide if using all or some of these: definitely want to use race/ethnicity and rural/urban-->
+We collected self-report information about demographics (age, gender, sexual orientation, race, ethnicity, education, employment, and income). Zip codes from participants' reported home addresses were linked to Rural–Urban Commuting Area (RUCA) codes to characterize the rural–urban status of their residences [@economicresearchserviceusdepartmentofagricultureRuralUrbanCommutingArea]. These variables were collected to characterize our sample. Demographic variables with demonstrated discrepancies in OUD treatment access and clinical outcomes (gender, race/ethnicity and geographic location) were used to perform subgroup analyses on acceptability measures [@pinedoCurrentReexaminationRacial2019; @kilaruIncidenceTreatmentOpioid2020; @greenfieldSubstanceAbuseTreatment2007; @martinNeedReceiptSubstance2022; @lofaroRuralUrbanDifferences2025].
 
 We collected information about OUD history to characterize OUD severity and recovery stability across our sample. These measures included self-reported Diagnostic and Statistical Manual of Mental Disorders, Fifth Edition OUD symptoms [@americanpsychiatricassociationDiagnosticStatisticalManual2022], past month opioid use, past month residential treatment for OUD, past month receipt of psychiatric medication, preferred opioid, preferred route of administration, and lifetime history of overdose.
 
@@ -96,7 +99,7 @@ We collected information about OUD history to characterize OUD severity and reco
 
 The participant experience questionnaire was appended to the monthly survey so that participants completed it at approximately 3-4 months into the study. On the questionnaire participants responded to three items about their experience with each sensing method depending on whether the sensing method required active effort (i.e., daily survey and monthly survey) or was passively collected (i.e., geolocation, cellular communication logs, and SMS text message content). 
 
-For the active methods, participants rated how much they agreed with two statements using 5-point bipolar scales (strongly disagree, disagree, undecided, agree, or strongly agree). The third item was an open-ended prompt. Specifically participants responded to:
+For the active methods, participants rated how much they agreed with two statements using 5-point bipolar scales (strongly agree, agree, undecided, disagree, or strongly disagree). The third item was an open-ended prompt. Specifically participants responded to:
 
 1. Completing the [*sensing method*] interfered with my daily activities.
 
@@ -113,60 +116,68 @@ For the passive methods, we did not inquire about interference given that they r
 
 ## Data Analysis Plan
 
-### Quantitative Analyses
-overall EMA compliance and disposition
+### Participation and Adherence
+For all enrolled participants we calculated two behavioral indicators of acceptability with the study protocol. First, we reported the overall average length of participation in days. We also plot monthly retention rates over the course of the 12-month study. Second, we reported overall and monthly adherence rates for the 2 active personal sensing methods (daily and monthly surveys). We did not calculate adherence for our three passive sensing methods (geolocation, cellular communication logs and SMS text message content) because it was not possible to determine whether missing data was due to non-adherence (e.g., disabling sharing permissions) or other reasons (e.g., infrequent communications with other people, phone in battery-saving mode, poor cellular connection).
 
-- look at demographic differences in these two behavioral measures
-- Use number of lapses as moderator? (is it harder to comply behaviorally when lapsing?)
+We performed 3 dichotomous demographic subgroup comparisons to determine if certain subgroups were better able and more willing to adhere to the study protocol. Specifically, we regressed length of participation on each of the key demographic grouping variables (gender, race/ethnicity and geographic location).<!--change to t test language?--> We did not assess for subgroup differences in daily and monthly survey adherence rates to minimize the number of comparisons. Participants were withdrawn from the study if adherence dropped, thus differences in adherence will likely also be captured in length of participation. 
 
-### Qualitative Analyses
-We used thematic analysis to analyze participants’ open-ended comments about the personal sensing methods. This is a systematic approach for identifying, analyzing, and reporting patterns or themes within qualitative data.  It is top-down in that it uses domain expertise from the literature to create a codebook of thematic categories driven by the aims and questions of the research being conducted. As coding is underway the codebook iteratively expands to include additional themes. We coded responses on the following themes: acceptability, sustainability, benefits, trust, usability, and feedback. We also coded valence for each theme (positive, negative, neutral). Once the code book was developed, the comments were coded by two independent coders. A third coder was brought in when discrepancies arose and these cases were discussed to arive at a resolution.
+### Participant Experience Questionannaire Quantitative Analyses
+Participants rated how much they agreed with statements about sensing method interference and dislike using a 5-point scale with descriptive anchors (strongly agree, agree, undecided, disagree, or strongly disagree). We recoded these items to a numeric scale ranging from −2 to 2, with 0 representing the neutral (undecided) midpoint and higher scores representing greater acceptability. We assessed overall participant perception of the sensing methods in two ways. First, we conducted 2-tailed, 1 sample *t* tests for the 2 items for each personal sensing method to determine whether on average perceptions of the sensing method are different from neutral (i.e., 0/undecided). We also calculated intraclass correlations (single, case 3 [@shroutIntraclassCorrelationsUses1979]) separately for the interference and dislike item to quantify the consistency of perceptions across personal sensing methods (e.g., Do participants who dislike one method also dislike the other methods?).
+
+<!--discuss how to approach demographic subgroup comparisons:
+
+- 7 overall t-tests (2 for interference, 5 for dislike)
+- 3 subgroups
+
+-->
+
+### Participant Experience Questionannaire Qualitative Analyses
+We used thematic analysis to analyze participants’ open-ended comments about the personal sensing methods. This is a systematic approach for identifying, analyzing, and reporting patterns or themes within qualitative data.  It is top-down in that it uses domain expertise from the literature to create a codebook of thematic categories driven by the aims and questions of the research being conducted. As coding is underway, the codebook iteratively expands to include additional themes. Once the code book was developed, the comments were coded by two independent coders. A third coder was brought in when discrepancies arose and these cases were discussed to arive at a resolution. The final codebook consisted of 6 themes: acceptability, sustainability, benefits, trust, usability, and feedback. For each endorsed theme, we also coded valence (positive, negative, neutral). <!--add table of theme definitions here or in supplement-->
+
+We calculated proportions of themes endorsed overall and by subgroup. <!--add comparisons among subgroups--> <!--dichotomizing will lose some nuance we saw in Olivia's poster - report these in supplement-->
     
 
-
-
 # Results
-## Participants
-A total of 336 participants enrolled in our study and provided at least one month of EMA data. [@tbl-demo] presents the demographic and clinical characteristics of these participants. 
+
+### Participation and Adherence
+A total of 335 participants enrolled in our study<!--update to enrollment number-->. [@tbl-demo] presents the demographic and clinical characteristics of these participants. 
 
 {{< embed notebooks/mak_demo_table.qmd#tbl-demo >}} 
 
-## Adherence
-
-### Participation
-@fig-1 shows participant attrition over 12 months. There was no significant difference in mean days on study between participants who were non-Hispanic White (*N* = 247, *M* = 299, *SD* = 109) and participants who were not White (*N* = 89, *M* = 284, *SD* = 112), *t*(334) = -1.11, *p* = .27. There was no significant difference in mean days on study between participants who reported a lapse (*N* = 1 37, *M* = 296, *SD* = 107) and those who did not report a lapse (*N* = 199, *M* = 294, *SD* = 112) while on study, *t*(334) = -0.19, *p* = .85.
+<!--update results to enrollment sample-->
+@fig-1 shows participant retention over 12 months. <!--report 5 subgroup comparisons-->
 
 {{< embed notebooks/ana_adherence.qmd#fig-1 >}}
 
 
-
-### Monthly and Daily Updates
-The overall adherence for the monthly updates was extremely high. Participants completed 96% of the monthly updates. 
-
-The overall adherence for the daily updates was 72%. This rate is consistent with other shorter-term EMA protocols in substance use populations (Average adherence is 75% [@jonesComplianceEcologicalMomentary2019]). @fig-2 shows the overall adherence rates for the daily update by month on study. 
-
-There was no significant difference in daily update adherence rates between participants who were non-Hispanic White (*M* = .72, *SD* = .19) and participants who were not white (*M* = .70, *SD* = .19), *t*(334) = -0.88, *p* = .38. There was a significant difference in adherence rates between participants who reported a lapse (*M* = .69, *SD* = .19) and participants who did not report a lapse (*M* = .74, *SD* = .18) while on study, *t*(334) = 2.4, *p* = .02. Participants who reported a lapse, had on average 5% lower adherence compared to participants who did not report a lapse while on study. 
+The overall adherence for the monthly updates was extremely high. Participants completed 96% of the monthly updates. The overall adherence for the daily updates was 72%. @fig-2 shows the overall adherence rates for the daily update by month on study. <!--update-->
 
 
 {{< embed notebooks/ana_adherence.qmd#fig-2 >}}
 
 
 ## Participant Experience Questionannaire Quantitative Results
-247 participants provided at least four months of data and completed the participant experience questionnaire. These participants were included in following analyses.
+247 participants completed the participant experience questionnaire. These participants were included in following analyses. <!--sensitivity analyses of demographics in analysis vs. enrolled sample-->
 
 
 ### Interference
-84% of participants (*N* = 207/247) disagreed (i.e., endorsing "Strongly disagree" or "Mildly disagree") with the statement "Completing the daily update interfered with my daily activities". 79% of participants (*N* = 196/247) disagreed with the statement "Completing the monthly update interfered with my daily activities". We provide histograms of participant responses in the supplement.   
+<!--Overall acceptability by sensing method-->
 
-An ICC (type 3) showed that, on average, interference ratings were moderately consistent across the two updates, ICC = .50, 95% CI = [.40 - .59].
+<!-- An ICC (type 3) showed that, on average, interference ratings were moderately consistent across the two updates, ICC = .50, 95% CI = [.40 - .59]. -->
 
+<!--We provide histograms of participant responses by sensing method in the supplement.-->
+
+<!--figure of mean responses with confidence intervals for each subgroup, pairwise comparisons?-->
 
 ### Dislike
-85% of participants (*N* = 211/247) disagreed (i.e., endorsing "Strongly disagree" or "Mildly disagree") with the statement "I disliked completing the daily update". 73% of participants (*N* = 179/246) disagreed with the statement "I disliked completing the monthly update". Fewer participants disagreed with the statement "I disliked [sensing method]" for geolocation (65%; *N* = 161/247), SMS and phone logs (64%; *N* = 158/246), and SMS content (64%; *N* = 156/245). As a result we saw an increase in responses endorsing a neutral stance toward these passive sensing methods ("Agree and disagree equally"). We provide histograms of participant responses by sensing method in the supplement.   
+<!--Overall acceptability by sensing method-->
 
-An ICC (type 3) showed that, on average, dislike ratings were moderately consistent across sensing methods, ICC = .48, 95% CI = [.42 - .54].
+<!-- An ICC (type 3) showed that, on average, dislike ratings were moderately consistent across sensing methods, ICC = .48, 95% CI = [.42 - .54]. -->
 
 
+<!--We provide histograms of participant responses by sensing method in the supplement.-->
+
+<!--figure of mean responses with confidence intervals for each subgroup, pairwise comparisons?-->
 
 
 ## Participant Experience Questionannaire Qualitative Results
@@ -191,10 +202,14 @@ An ICC (type 3) showed that, on average, dislike ratings were moderately consist
 
 - On average, participants found these methods to be acceptable and saw benefits from using them.
 
+- The overall adherence for the daily updates was 72%. This rate is consistent with other shorter-term EMA protocols in substance use populations (Average adherence is 75% [@jonesComplianceEcologicalMomentary2019]). Suggests feasibility of long-term EMA
+
+- Saw an increase in responses endorsing a neutral stance toward these passive sensing methods ("Agree and disagree equally"). 
+
 - However, its important to acknowledge that not all participants felt this way. There were differences in acceptability of personal sensing types, specifically monthly updates from Hispanic participants and geolocation and message content from Black participants. 
 
 
-- Benefits reported benefits with active methods (e.g., reflection, daily pauses, we aligning with goals). The passive methods offered no explicit benefits. We know from previous research that perceived benefits in research and healthcare play an important role in trust.
+- Benefits reported benefits with active methods (e.g., reflection, daily pauses, aligning with goals). The passive methods offered no explicit benefits. We know from previous research that perceived benefits in research and healthcare play an important role in trust.
 
 ## References
 

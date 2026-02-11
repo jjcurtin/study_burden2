@@ -15,9 +15,6 @@ editor_options:
 
 This script pulls out burden questions from processed monthly surveys. It does EDA on burden data and saves out final processed burden data into 2 files (`burden_quant.csv` and `burden_qual.csv`). 
 
-Outstanding:   
-
-- Missing intake study start date for subid 1069 at the moment - need to investigate, but does not invalidate burden data.
 
 Decisions:    
 
@@ -35,7 +32,9 @@ Decisions:
     - Keep first survey as these generally look more complete. 
 
 
+- Only one subid excluded for not being in US - subid 1245
 
+    - During eda on EMA utc_offset it was determined they had modal UTC offset of 60 (+5 hours). This puts them in either Islamabad, Ekaterinburg, Karachi, or Tashkent. This subid had 61 lapses reported. At other times there UTC offset is 600 (+10 hours).   
 
 
 ## Set up
@@ -50,15 +49,17 @@ devtools::source_url("https://github.com/jjcurtin/lab_support/blob/main/format_p
 
 theme_set(theme_classic())
 
-path_processed <- format_path("studydata/risk2/data_processed/shared")
-path_burden <- format_path("studydata/risk2/data_processed/burden2")
+path_shared <- format_path("risk2/data_processed/shared")
+path_burden <- format_path("risk2/data_processed/burden2")
 ```
 
 ## Read in monthly surveys
 
 ```{r}
 month_survey <- read_csv(here::here(path_shared, "survey_monthly.csv"),
-                         col_types = "dccTTccccccccccccccccccccccccccccccccc") 
+                         col_types = "dccTTccccccccccccccccccccccccccccccccc") |> 
+   # filter out subid 1245
+  filter(subid != 1245)
 ```
 
 
@@ -84,7 +85,7 @@ burden <- month_survey |>
 
 
 ```{r}
-study_start <- read_csv(here::here(path_processed, "survey_intake.csv"),
+study_start <- read_csv(here::here(path_shared, "survey_intake.csv"),
                          show_col_types = FALSE) |> 
   select(subid, study_start = start_date) |> 
   mutate(study_start = as_datetime(study_start, tz = "America/Chicago")) |> 
