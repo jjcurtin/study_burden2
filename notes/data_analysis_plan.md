@@ -1,0 +1,20 @@
+---
+title: Data Analysis Plan 
+editor_options: 
+  chunk_output_type: console
+---
+
+## Data Analysis Plan
+
+### Participation and Adherence
+For all enrolled participants we calculated two behavioral indicators of acceptability with the study protocol. First, we reported the overall average length of participation in days. We also plot monthly retention rates over the course of the 12-month study. Second, we reported overall and monthly adherence rates for the 2 active personal sensing methods (daily and monthly surveys). We did not calculate adherence for our three passive sensing methods (geolocation, cellular communication logs and SMS text message content) because it was not possible to determine whether missing data was due to non-adherence (e.g., disabling sharing permissions) or other reasons (e.g., infrequent communications with other people, phone in battery-saving mode, poor cellular connection).
+
+We performed 3 dichotomous demographic subgroup comparisons to determine if certain subgroups were better able and more willing to adhere to the study protocol. Specifically, we regressed length of participation on each of the key demographic grouping variables (gender, race/ethnicity and geographic location).<!--change to t test language?--> We did not assess for subgroup differences in daily and monthly survey adherence rates to minimize the number of comparisons. Participants were withdrawn from the study if adherence dropped, thus differences in adherence will likely also be captured in length of participation. 
+
+### Participant Experience Questionannaire Quantitative Analyses
+Participants rated how much they agreed with 7 statements about sensing method interference and dislike using a 5-point scale with descriptive anchors (strongly agree, agree, undecided, disagree, or strongly disagree). We recoded these items to a numeric scale ranging from −2 to 2, with 0 representing the neutral (undecided) midpoint and higher scores representing greater acceptability. We assessed overall participant perception of the sensing methods in two ways. First, we conducted 2-tailed, 1 sample *t* tests for the 2 items for each personal sensing method to determine whether on average perceptions of the sensing method are different from neutral (i.e., 0/undecided). We also calculated intraclass correlations (single, case 3 [@shroutIntraclassCorrelationsUses1979]) separately for the interference and dislike item to quantify the consistency of perceptions across personal sensing methods (e.g., Do participants who dislike one method also dislike the other methods?). We also assessed for subgroup differences across these 7 items by regressing agreement rating on the 3 demographic subgroups. <!--too many comparisons?-->
+
+### Participant Experience Questionannaire Qualitative Analyses
+We used thematic analysis to analyze participants’ open-ended comments about the personal sensing methods. This is a systematic approach for identifying, analyzing, and reporting patterns or themes within qualitative data.  It uses domain expertise from the literature to create a codebook of thematic categories driven by the aims and questions of the research being conducted. As coding is underway, the codebook iteratively expands to include additional themes. Once the code book was developed, the comments were coded by two independent coders. A third coder was brought in when discrepancies arose and these cases were discussed to arive at a resolution. The final codebook consisted of 6 themes: acceptability, sustainability, benefits, trust, usability, and feedback. For each endorsed theme, we also coded valence (positive, negative, neutral). <!--add table of theme definitions here or in supplement-->
+
+We provided descriptive proportions of themes endorsed overall and by subgroup. <!--add statistical comparisons among subgroups?--> <!--dichotomizing race/ethnicity will lose some nuance we saw in Olivia's poster - put these bar plots in supplement-->
