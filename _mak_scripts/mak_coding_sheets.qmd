@@ -27,7 +27,7 @@ devtools::source_url("https://github.com/jjcurtin/lab_support/blob/main/format_p
 
 theme_set(theme_classic())
 
-path_burden <- format_path("studydata/risk2/data_processed/burden2")
+path_burden <- format_path("risk2/data_processed/burden2")
 ```
 
 ## Read in data
@@ -39,17 +39,13 @@ comments <- read_csv(here::here(path_burden, "final_comments.csv"),
 
 ```
 
-
-Add theme cols
+Save out batches
 ```{r}
 comments |> 
-  mutate(acceptability = "",
-         benefits = "",
-         trust = "",
-         sustainability = "",
-         usability = "") |> 
-  slice(1:100) |> 
-  write_csv(here::here(path_burden, "coded_comments_401_706_kw.csv")) |> 
+  mutate(code = "",
+         other_coder_notes = "") |> 
+  slice(201:300) |> 
+  write_csv(here::here(path_burden, "coded_comments_201_300_KW.csv")) |> 
   glimpse()
 ```
 

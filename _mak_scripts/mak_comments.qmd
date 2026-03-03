@@ -126,6 +126,8 @@ Unique subids: `r length(unique(burden_long$subid))`
 ### Save out data
 ```{r}
 burden_long |> 
+  mutate(comment_num = row_number()) |> 
+  relocate(comment_num) |> 
   write_csv(here::here(path_burden, "final_comments.csv"))
 ```
 

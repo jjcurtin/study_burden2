@@ -13,21 +13,59 @@ editor_options:
 
 This file will be for us to keep track of notes about how we are defining the different themes, exemplar quotes of the different themes, and questions that come up that we want to discuss with each other.
 
+"It's kinda scary, but, oh well." - start title with
+
+- does there need to be birdectionality on themes?
 
 
-# Acceptability
+Thematic Analyses - Braun and Clarke
 
 
-# Benefits
+# Benefits - self
+
+Direct benefits to self
+
+"It's a good tool that makes me look back and reflect on how I am doing in my recovery."
+
+"This keeps me accountable everyday so i find the daily check in very helpful"
+
+"Helps me keep a record of my thoughts, as well as staying focused. It also gives me added income."
 
 
-# Trust
+# Greater Good 
+
+benefits to others
 
 
-# Sustainability
+# Privacy
+
+"Its a bit of an invasion of privacy but I understand why its needed for the study."
+"I dislike someone reading my messages because I'm always saying some really, really private and intimate things with my wife"
 
 
-# Usability
+Would this count?
+"Im not hiding anything so it doesn't bother me"
 
 
-# Feedback
+## Exceptions to privacy/ Research context
+
+## Nothing to hide
+
+## Trust information will be confidential
+
+# Feasibility
+
+"Time consuming."
+
+"Its easy to do. It takes like 4min to do so thats a positive i guess."
+
+"I have worked the daily update into my routine."
+
+- possibly second theme to capture time-changing apprasials of method
+
+
+# Technology (new theme - more specific)
+
+- tech issues
+
+This would capture usability of the way we sensed data 
