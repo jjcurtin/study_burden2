@@ -42,10 +42,14 @@ comments <- read_csv(here::here(path_burden, "final_comments.csv"),
 Save out batches
 ```{r}
 comments |> 
-  mutate(code = "",
-         other_coder_notes = "") |> 
-  slice(201:300) |> 
-  write_csv(here::here(path_burden, "coded_comments_201_300_KW.csv")) |> 
+  mutate(benefits_self = "",
+         benefits_other = "",
+         privacy = "",
+         research_context = "",
+         feasibility = "",
+         technology = "") |> 
+  slice(1:200) |> 
+  write_csv(here::here(path_burden, "coded_comments_1_200_EL.csv")) |> 
   glimpse()
 ```
 

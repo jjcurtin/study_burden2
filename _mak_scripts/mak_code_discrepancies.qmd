@@ -1,0 +1,89 @@
+---
+title: "Check for coding discrepancies" 
+author: "Kendra Wyant"
+date: "`r lubridate::today()`"
+format: 
+  html: 
+    embed-resources: true
+    toc: true 
+    toc_depth: 4
+editor_options: 
+  chunk_output_type: console
+---   
+
+## Notes
+
+This file checks codes by Ella and Kendra for discrepancies and saves out all discrepant comments for a third coder to review (Claire).
+
+
+## Set up
+```{r}
+#| include: false
+
+
+library(tidyverse) 
+library(janitor)
+
+devtools::source_url("https://github.com/jjcurtin/lab_support/blob/main/format_path.R?raw=true")
+
+path_burden <- format_path("/risk2/data_processed/burden2")
+```
+
+## Read in data
+
+```{r}
+coder_1 <- read_csv(file.path(path_burden, "coded_comments_1_200_KW.csv"),
+                          show_col_types = FALSE)
+coder_2 <- read_csv(file.path(path_burden, "coded_comments_1_200_EL.csv"),
+                          show_col_types = FALSE)
+```
+
+Check for notes
+```{r}
+coder_1 |> 
+  filter(!is.na(data_source_inaccuracies)) |> 
+  select(comment_num, data_source_inaccuracies) 
+```
+
+Remove comment_num 62 
+```{r}
+coder_1 <- coder_1 |> 
+  filter(comment_num != 62)
+
+coder_2 <- coder_2 |> 
+  filter(comment_num != 62)
+```
+
+
+
+## Compare codes
+```{r}
+disc_code <- coder_1 |> 
+  select(-data_source_inaccuracies) |> 
+  anti_join(coder_2) |> 
+  glimpse()
+```
+
+```{r}
+coder_1 |> 
+  filter(comment_num %in% disc_code$comment_num) |>
+  view()
+```
+
+```{r}
+coder_2 |> 
+  filter(comment_num %in% disc_code$comment_num) |>
+  view()
+```
+
+
+## Write out discrepant codes for 3rd coder
+```{r}
+disc_code[5:11] <- NA
+
+disc_code |> 
+  write_csv(file.path(path_burden, "coded_comments_1_200_CP.csv"))
+```
+
+
+

@@ -31,8 +31,8 @@ devtools::source_url("https://github.com/jjcurtin/lab_support/blob/main/format_p
 
 theme_set(theme_classic())
 
-path_burden <- format_path("studydata/risk2/data_processed/burden2")
-path_shared <- format_path("studydata/risk2/data_processed/shared")
+path_burden <- format_path("risk2/data_processed/burden2")
+path_shared <- format_path("risk2/data_processed/shared")
 ```
 
 
