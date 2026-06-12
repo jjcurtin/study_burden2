@@ -47,9 +47,10 @@ comments |>
          privacy = "",
          research_context = "",
          feasibility = "",
-         technology = "") |> 
-  slice(1:200) |> 
-  write_csv(here::here(path_burden, "coded_comments_1_200_EL.csv")) |> 
+         technology = "",
+         attitude_overall = "") |> 
+  slice(601:859) |> 
+  write_csv(here::here(path_burden, "coded_comments_601_859_KW.csv")) |> 
   glimpse()
 ```
 

@@ -1,0 +1,309 @@
+---
+title: "Preregistration" 
+author: "Kendra Wyant"
+date: "`r June 12, 2026"
+number-sections: false
+format: 
+ html: 
+   toc: false
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| echo: false
+
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(tidyposterior))
+```
+
+## Quantitative Analyses
+
+### Interference
+
+#### Between Subjects
+
+2 linear models (daily updates and monthly updates)
+
+interfere ~ 1 + gender_centered + race_centered + income_centered + geography_centered
+
+Interpretation:
+
+- Overall ratings of interference (are ratings, on average, different than neutral/0)
+- Demographic effects (are ratings, on average, different across demographic groups)
+
+#### Within Subjects
+1 linear model (daily updates - monthly updates)
+
+interfere_diff ~ 1 + gender_centered + race_centered + income_centered + geography_centered
+
+Interpretation:
+
+- Overall difference in ratings of interference by measure (are there relative differences in interference ratings by measure)
+- Demographic effects (are differences in ratings of interference by measure, on average, different across demographic groups)
+
+
+### Dislike
+
+5 linear models (daily updates, monthly updates, gps, SMS/phone logs, SMS content)
+
+dislike ~ 1 + gender_centered + race_centered + income_centered + geography_centered
+
+Interpretation:
+
+- Overall ratings of dislike (are ratings, on average, different than neutral/0)
+- Demographic effects (are ratings, on average, different across demographic groups)
+
+
+#### Within Subjects
+10 linear models (daily updates - monthly updates; daily updates - gps; daily updates - sms/phone logs; daily updates - sms content; monthly updates - gps; monthly updates - sms/phone logs;    monthly updates - sms content; gps - sms/phone logs; gps - sms content; sms/phone logs - sms content)
+
+dislike_diff ~ 1 + gender_centered + race_centered + income_centered + geography_centered
+
+Interpretation:
+
+- Overall difference in ratings of dislike by measure (are there relative differences in dislike ratings by measure)
+- Demographic effects (are differences in ratings of dislike by measure, on average, different across demographic groups)
+
+
+## Demo: Quantitative
+
+Generate simulated data with the following variables: 
+
+Integer values ranging from -2 to 2 skewed negatively
+
+- daily_update_interfere 
+- monthly_update_interfere
+- daily_update_dislike
+- monthly_update_dislike
+- gps_dislike
+- sms_phone_logs_dislike
+- sms_content_dislike
+
+Centered demographic variables (-.5, .5)
+
+- gender 
+- race
+- income
+- geography
+
+```{r}
+#| code-fold: TRUE
+
+set.seed(102030)
+
+n <- 100
+
+data <- tibble(subid = seq(1, 100, 1),
+               daily_update_interfere = sample(c(-2, -1, 0, 1, 2),
+                                               n,
+                                               replace = TRUE,
+                                               prob = c(.40, .30, .15, .10, .05)),
+               monthly_update_interfere = sample(c(-2, -1, 0, 1, 2),
+                                                 n,
+                                                 replace = TRUE,
+                                                 prob = c(.40, .30, .15, .10, .05)),
+               daily_update_dislike = sample(c(-2, -1, 0, 1, 2),
+                                             n,
+                                             replace = TRUE,
+                                             prob = c(.45, .25, .15, .10, .05)),
+               monthly_update_dislike = sample(c(-2, -1, 0, 1, 2),
+                                               n,
+                                               replace = TRUE,
+                                               prob = c(.45, .25, .15, .10, .05)),
+               gps_dislike = sample(c(-2, -1, 0, 1, 2),
+                                    n,
+                                    replace = TRUE,
+                                    prob = c(.50, .25, .15, .07, .03)),
+               sms_phone_logs_dislike = sample(c(-2, -1, 0, 1, 2),
+                                               n,
+                                               replace = TRUE,
+                                               prob = c(.50, .25, .15, .07, .03)),
+               sms_content_dislike = sample(c(-2, -1, 0, 1, 2),
+                                            n,
+                                            replace = TRUE,
+                                            prob = c(.55, .20, .15, .07, .03)),
+               gender = sample(c(-.5, .5),
+                               n,
+                               replace = TRUE,
+                               prob = c(.50, .50)),
+               race = sample(c(-.5, .5),
+                               n,
+                               replace = TRUE,
+                               prob = c(.70, .30)),
+               income = sample(c(-.5, .5),
+                               n,
+                               replace = TRUE,
+                               prob = c(.50, .50)),
+               geography = sample(c(-.5, .5),
+                               n,
+                               replace = TRUE,
+                               prob = c(.60, .40))) |> 
+  glimpse()
+```
+
+
+### Between Subjects: Daily Update Interference
+
+- interpret overall effect (ratings different than neutral; intercept), gender effect, race effect, income effect, and  geography effect on interference rating.
+```{r}
+summary(lm(daily_update_interfere ~ 1 + gender + race + income + geography, 
+           data = data))
+
+data |> 
+  ggplot(aes(x = daily_update_interfere)) +
+  geom_histogram(bins = 5, color = "black", fill = "light blue") +
+  scale_x_continuous(NULL,
+                     breaks = c(-2, -1, 0, 1, 2), 
+                     labels = c("Strongly disagree",
+                                "Mildly disagree",
+                                "Agree and disagree equally",
+                                "Mildly agree",
+                                "Strongly agree")) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45,
+                                   hjust = 1,
+                                   vjust = 1))
+
+```
+
+
+### Within Subjects: Daily vs Monthly Update Interference
+
+```{r}
+data_within <- data |> 
+  mutate(interfere_diff = daily_update_interfere - monthly_update_interfere)
+
+summary(lm(interfere_diff ~ 1 + gender + race + income + geography, 
+           data = data_within))
+```
+
+
+
+## Qualitative Analyses
+
+### Overall Attitude
+10 logistic regression models for each sensing method (daily update, monthly update,
+gps, phone/sms logs, sms content) x valence (positive, negative) combination. 
+
+*okay to count mixed in both positive and negative?*
+
+attitude_positive ~ 1 + gender_centered + race_centered + income_centered + geography_centered
+
+attitude_negative ~ 1 + gender_centered + race_centered + income_centered + geography_centered
+
+Interpretation:
+
+- Overall log-odds of positive/negative comment
+- Demographic effects (are log-odds of positive/negative comments different by demographic group)
+
+### Theme Analyses
+50 logistic regression models for each theme (benefits to self, benefits to others, privacy, research context, and feasibility) x sensing method (daily update, monthly update,
+gps, phone/sms logs, sms content) x valence (positive, negative) combination.
+
+*Or 25 models only looking at presence of theme?*  
+
+theme_positive ~ 1 + gender_centered + race_centered + income_centered + geography_centered
+
+theme_negative ~ 1 + gender_centered + race_centered + income_centered + geography_centered
+
+Interpretation:
+
+- Overall log-odds of positive/negative comment for theme
+- Demographic effects (are log-odds of positive/negative comments for theme different by demographic group)
+
+
+## Demo: Qualitative
+
+Generate simulated data with the following variables: 
+
+Dichotomous (0/1) values for coded themes
+
+- attitude_pos
+- attitude_neg
+- benefits_self_pos
+- benefits_self_neg 
+
+Centered demographic variables (-.5, .5)
+
+- gender 
+- race
+- income
+- geography
+
+```{r}
+#| code-fold: TRUE
+
+set.seed(102030)
+
+n <- 100
+
+data <- tibble(subid = rep(1:n, 5),
+               data = rep(c("daily_update",
+                            "monthly_update",
+                            "gps",
+                            "sms_content",
+                            "sms_phone_logs"), 
+                          each = n),
+               attitude_pos = sample(c(1, 0),
+                                     n*5,
+                                     replace = TRUE,
+                                     prob = c(.60, .40)),
+               attitude_neg = sample(c(1, 0),
+                                     n*5,
+                                     replace = TRUE,
+                                     prob = c(.60, .40)), 
+               benefits_self_pos = sample(c(1, 0),
+                                          n*5,
+                                          replace = TRUE,
+                                          prob = c(.60, .40)),
+               benefits_self_neg = sample(c(1, 0),
+                                          n*5,
+                                          replace = TRUE,
+                                          prob = c(.20, .80)),
+               gender = sample(c(-.5, .5),
+                               n*5,
+                               replace = TRUE,
+                               prob = c(.50, .50)),
+               race = sample(c(-.5, .5),
+                               n*5,
+                               replace = TRUE,
+                               prob = c(.70, .30)),
+               income = sample(c(-.5, .5),
+                               n*5,
+                               replace = TRUE,
+                               prob = c(.50, .50)),
+               geography = sample(c(-.5, .5),
+                               n*5,
+                               replace = TRUE,
+                               prob = c(.60, .40))) |> 
+  glimpse()
+```
+
+
+
+
+### Overall Attitude Analysis: Positive and Negative for Daily Update
+
+```{r}
+summary(lm(attitude_pos ~ 1 + gender + race + income + geography, 
+           data = subset(data, data == "daily_update")))
+
+summary(lm(attitude_neg ~ 1 + gender + race + income + geography, 
+           data = subset(data, data == "daily_update")))
+```
+
+### Theme Analysis: Benfits to Self Positive and Negative for Daily Update
+
+```{r}
+summary(lm(benefits_self_pos ~ 1 + gender + race + income + geography, 
+           data = subset(data, data == "daily_update")))
+
+summary(lm(benefits_self_neg ~ 1 + gender + race + income + geography, 
+           data = subset(data, data == "daily_update")))
+```
+
+
+
+
+

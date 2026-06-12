@@ -32,57 +32,67 @@ path_burden <- format_path("/risk2/data_processed/burden2")
 ## Read in data
 
 ```{r}
-coder_1 <- read_csv(file.path(path_burden, "coded_comments_1_200_KW.csv"),
+coder_1 <- read_csv(file.path(path_burden, "coded_comments_601_859_KW.csv"),
                           show_col_types = FALSE)
-coder_2 <- read_csv(file.path(path_burden, "coded_comments_1_200_EL.csv"),
+coder_2 <- read_csv(file.path(path_burden, "coded_comments_601_859_EL.csv"),
                           show_col_types = FALSE)
 ```
 
 Check for notes
 ```{r}
 coder_1 |> 
-  filter(!is.na(data_source_inaccuracies)) |> 
-  select(comment_num, data_source_inaccuracies) 
+  filter(!is.na(notes)) |> 
+  select(comment_num, notes) 
 ```
 
-Remove comment_num 62 
+Remove comment_num's according to notes 
 ```{r}
 coder_1 <- coder_1 |> 
-  filter(comment_num != 62)
+  filter(!comment_num %in% c(562))
 
 coder_2 <- coder_2 |> 
-  filter(comment_num != 62)
+  filter(!comment_num %in% c(562))
 ```
 
 
 
 ## Compare codes
 ```{r}
+coder_1 <- coder_1 |> 
+  select(-notes)
+
 disc_code <- coder_1 |> 
-  select(-data_source_inaccuracies) |> 
   anti_join(coder_2) |> 
   glimpse()
 ```
 
 ```{r}
-coder_1 |> 
+disc_codes <- coder_1 |>
   filter(comment_num %in% disc_code$comment_num) |>
-  view()
+  arrange(comment_num) |>
+  bind_cols(
+    coder_2 |>
+      filter(comment_num %in% disc_code$comment_num) |>
+      arrange(comment_num) |>
+      rename_with(~ paste0(.x, "_r2")))
+
+disc_codes <- disc_codes |> 
+  mutate(benefits_self = if_else(benefits_self == benefits_self_r2, benefits_self, NA_character_),
+         benefits_other = if_else(benefits_other == benefits_other_r2, benefits_other, NA_character_),
+         privacy = if_else(privacy == privacy_r2, privacy, NA_character_),
+         research_context = if_else(research_context == research_context_r2, research_context, NA_character_),
+         feasibility = if_else(feasibility == feasibility_r2, feasibility, NA_character_),
+         technology = if_else(technology == technology_r2, technology, NA_character_),
+         attitude_overall = if_else(attitude_overall == attitude_overall_r2, attitude_overall, NA_character_)) |> 
+  select(-ends_with("_r2"))
 ```
 
-```{r}
-coder_2 |> 
-  filter(comment_num %in% disc_code$comment_num) |>
-  view()
-```
 
 
 ## Write out discrepant codes for 3rd coder
 ```{r}
-disc_code[5:11] <- NA
-
-disc_code |> 
-  write_csv(file.path(path_burden, "coded_comments_1_200_CP.csv"))
+disc_codes |> 
+  write_csv(file.path(path_burden, "coded_comments_601_859_CP.csv"))
 ```
 
 
