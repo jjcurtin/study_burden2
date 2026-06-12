@@ -17,7 +17,26 @@ suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(tidyposterior))
 ```
 
-## Quantitative Analyses
+# Data Analysis Plan
+
+## Participation and Adherence
+
+For all enrolled participants we will calculate two behavioral indicators of acceptability with the study protocol. 
+
+1. We will report the overall average length of participation in days. We will also plot monthly retention rates over the course of the 12-month study. 
+
+2. We will report overall and monthly adherence rates for the 2 active personal sensing methods (daily and monthly surveys). We will not calculate adherence for our three passive sensing methods (geolocation, cellular communication logs and SMS text message content) because it is not possible to determine whether missing data was due to non-adherence (e.g., disabling sharing permissions) or other reasons (e.g., infrequent communications with other people, phone in battery-saving mode, poor connection with cellular service).
+
+We will evaluate whether length of study participation differed across our 4 demographic subgroups (gender, race/ethnicity, income, and geographic location) to understand whether certain subgroups were better able and more willing to adhere to the study protocol. Specifically, we will conduct a single linear model where length of participation (in days) is regressed on the four demographic grouping variables (centered around 0). 
+
+`study_days ~ 1 + gender_centered + race_centered + income_centered + geography_centered`
+
+
+We will not assess for subgroup differences in daily and monthly survey adherence rates to minimize the number of analyses. Participants were withdrawn from the study if adherence dropped, thus differences in adherence will likely also be captured in length of participation. 
+
+## Participant Experience Questionannaire Quantitative Analyses
+
+Participants rated how much they agreed with 7 statements about sensing method interference and dislike using a 5-point scale with descriptive anchors (strongly agree, agree, agree and disagree equally, disagree, or strongly disagree). We recoded these items to a numeric scale ranging from −2 to 2, with 0 representing the neutral (agree and disagree equally) midpoint and higher scores representing greater acceptability. 
 
 ### Interference
 
@@ -25,7 +44,7 @@ suppressPackageStartupMessages(library(tidyposterior))
 
 2 linear models (daily updates and monthly updates)
 
-interfere ~ 1 + gender_centered + race_centered + income_centered + geography_centered
+`interfere ~ 1 + gender_centered + race_centered + income_centered + geography_centered`
 
 Interpretation:
 
@@ -35,7 +54,9 @@ Interpretation:
 #### Within Subjects
 1 linear model (daily updates - monthly updates)
 
-interfere_diff ~ 1 + gender_centered + race_centered + income_centered + geography_centered
+`interfere_diff ~ 1 + gender_centered + race_centered + income_centered + geography_centered`
+
+*Change to ICC to report overall summary of consistency across measures? Would eliminate 11 models.*
 
 Interpretation:
 
@@ -47,7 +68,7 @@ Interpretation:
 
 5 linear models (daily updates, monthly updates, gps, SMS/phone logs, SMS content)
 
-dislike ~ 1 + gender_centered + race_centered + income_centered + geography_centered
+`dislike ~ 1 + gender_centered + race_centered + income_centered + geography_centered`
 
 Interpretation:
 
@@ -58,7 +79,7 @@ Interpretation:
 #### Within Subjects
 10 linear models (daily updates - monthly updates; daily updates - gps; daily updates - sms/phone logs; daily updates - sms content; monthly updates - gps; monthly updates - sms/phone logs;    monthly updates - sms content; gps - sms/phone logs; gps - sms content; sms/phone logs - sms content)
 
-dislike_diff ~ 1 + gender_centered + race_centered + income_centered + geography_centered
+`dislike_diff ~ 1 + gender_centered + race_centered + income_centered + geography_centered`
 
 Interpretation:
 
@@ -145,7 +166,8 @@ data <- tibble(subid = seq(1, 100, 1),
 
 ### Between Subjects: Daily Update Interference
 
-- interpret overall effect (ratings different than neutral; intercept), gender effect, race effect, income effect, and  geography effect on interference rating.
+Interpret overall effect (ratings different than neutral; intercept), gender effect, race effect, income effect, and  geography effect on interference rating.
+
 ```{r}
 summary(lm(daily_update_interfere ~ 1 + gender + race + income + geography, 
            data = data))
@@ -180,7 +202,11 @@ summary(lm(interfere_diff ~ 1 + gender + race + income + geography,
 
 
 
-## Qualitative Analyses
+## Participant Experience Questionannaire Qualitative Analyses
+
+We used thematic analysis to analyze participants’ open-ended comments about the personal sensing methods. This is a systematic approach for identifying, analyzing, and reporting patterns or themes within qualitative data.  It uses domain expertise from the literature to create a codebook of thematic categories driven by the aims and questions of the research being conducted. As coding is underway, the codebook is iteratively revised to include additional themes or exclude themes not present in the data.The comments were coded by two independent coders. A third coder was brought in when discrepancies arose and these cases were discussed as a group to arrive at a resolution. We report on 4 primary themes: benefits to self, benefits to others, privacy, and feasibility and the overall valence of the comment. 
+
+We will provide descriptive proportions of valence and themes endorsed overall for each sensing method. We will then conduct six logistic regression models for each sensing method to evaluate the probability that a comment was positively and negatively valenced and the probability that the four themes were endorsed. Specifically, we will conduct separate models where each theme or valence of interest is coded as 1 if present and 0 if not present. These outcomes will then be regressed on the four demographic grouping variables (centered around 0) and overall and between demographic subgroup log-odds will be evaluated.
 
 ### Overall Attitude
 10 logistic regression models for each sensing method (daily update, monthly update,
@@ -188,9 +214,9 @@ gps, phone/sms logs, sms content) x valence (positive, negative) combination.
 
 *okay to count mixed in both positive and negative?*
 
-attitude_positive ~ 1 + gender_centered + race_centered + income_centered + geography_centered
+`attitude_positive ~ 1 + gender_centered + race_centered + income_centered + geography_centered`
 
-attitude_negative ~ 1 + gender_centered + race_centered + income_centered + geography_centered
+`attitude_negative ~ 1 + gender_centered + race_centered + income_centered + geography_centered`
 
 Interpretation:
 
@@ -198,19 +224,19 @@ Interpretation:
 - Demographic effects (are log-odds of positive/negative comments different by demographic group)
 
 ### Theme Analyses
-50 logistic regression models for each theme (benefits to self, benefits to others, privacy, research context, and feasibility) x sensing method (daily update, monthly update,
-gps, phone/sms logs, sms content) x valence (positive, negative) combination.
+20 logistic regression models for each theme (benefits to self, benefits to others, privacy, and feasibility) x sensing method (daily update, monthly update,
+gps, phone/sms logs, sms content) combination.
 
-*Or 25 models only looking at presence of theme?*  
+*Planning to only look at presence of theme (not valence), then pull out content of endorsed themes as exemplars that show valence pattern. Otherwise we would have 40 models if crossed on theme also.*  
 
-theme_positive ~ 1 + gender_centered + race_centered + income_centered + geography_centered
+`theme ~ 1 + gender_centered + race_centered + income_centered + geography_centered`
 
-theme_negative ~ 1 + gender_centered + race_centered + income_centered + geography_centered
+`theme ~ 1 + gender_centered + race_centered + income_centered + geography_centered`
 
 Interpretation:
 
-- Overall log-odds of positive/negative comment for theme
-- Demographic effects (are log-odds of positive/negative comments for theme different by demographic group)
+- Overall log-odds of comment endorsing theme
+- Demographic effects (are log-odds of endorsing theme different by demographic group)
 
 
 ## Demo: Qualitative
@@ -221,8 +247,10 @@ Dichotomous (0/1) values for coded themes
 
 - attitude_pos
 - attitude_neg
-- benefits_self_pos
-- benefits_self_neg 
+- benefits_self
+- benefits_others
+- privacy
+- feasibility
 
 Centered demographic variables (-.5, .5)
 
@@ -253,14 +281,22 @@ data <- tibble(subid = rep(1:n, 5),
                                      n*5,
                                      replace = TRUE,
                                      prob = c(.60, .40)), 
-               benefits_self_pos = sample(c(1, 0),
+               benefits_self = sample(c(1, 0),
                                           n*5,
                                           replace = TRUE,
                                           prob = c(.60, .40)),
-               benefits_self_neg = sample(c(1, 0),
-                                          n*5,
-                                          replace = TRUE,
-                                          prob = c(.20, .80)),
+               benefits_others = sample(c(1, 0),
+                                        n*5,
+                                        replace = TRUE,
+                                        prob = c(.20, .80)),
+               privacy = sample(c(1, 0),
+                                n*5,
+                                replace = TRUE,
+                                prob = c(.33, .77)),
+               feasibility = sample(c(1, 0),
+                                    n*5,
+                                    replace = TRUE,
+                                    prob = c(.40, .60)),
                gender = sample(c(-.5, .5),
                                n*5,
                                replace = TRUE,
@@ -280,6 +316,25 @@ data <- tibble(subid = rep(1:n, 5),
   glimpse()
 ```
 
+### Descriptives
+
+Report percentage of comments coded by valence and theme separately for sensing method.
+
+```{r}
+data |>
+  group_by(data) |>
+  summarise(positive = sum(attitude_pos, na.rm = TRUE) / n(),
+            negative = sum(attitude_neg, na.rm = TRUE) / n(),
+            `benefits to self` = sum(benefits_self, na.rm = TRUE) / n(),
+            `benefits to others` = sum(benefits_others, na.rm = TRUE) / n(),
+            `privacy` = sum(privacy, na.rm = TRUE) / n(),
+            `feasibility` = sum(feasibility, na.rm = TRUE) / n()) |>
+  pivot_longer(cols = c(2:7),
+    names_to = "Proportion",
+    values_to = "prop") |>
+  pivot_wider(names_from = data,
+              values_from = prop)
+```
 
 
 
@@ -293,13 +348,13 @@ summary(lm(attitude_neg ~ 1 + gender + race + income + geography,
            data = subset(data, data == "daily_update")))
 ```
 
-### Theme Analysis: Benfits to Self Positive and Negative for Daily Update
+### Theme Analysis: Benfits to Self for Daily Update
 
 ```{r}
-summary(lm(benefits_self_pos ~ 1 + gender + race + income + geography, 
+summary(lm(benefits_self ~ 1 + gender + race + income + geography, 
            data = subset(data, data == "daily_update")))
 
-summary(lm(benefits_self_neg ~ 1 + gender + race + income + geography, 
+summary(lm(benefits_self ~ 1 + gender + race + income + geography, 
            data = subset(data, data == "daily_update")))
 ```
 
