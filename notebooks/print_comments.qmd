@@ -1,0 +1,271 @@
+---
+title: "Print all comments" 
+author: "Kendra Wyant"
+date: "`r lubridate::today()`"
+format: 
+  html: 
+    embed-resources: true
+    toc: true 
+    toc_depth: 4
+editor_options: 
+  chunk_output_type: console
+---   
+
+## Notes
+
+This file prints out the coded comments by theme and direction for final review by the 3 coders (KW, EL, CP).
+
+
+```{r}
+#| include: false
+
+
+library(tidyverse) 
+library(janitor)
+
+devtools::source_url("https://github.com/jjcurtin/lab_support/blob/main/format_path.R?raw=true")
+
+path_burden <- format_path("/risk2/data_processed/burden2")
+
+codes <- read_csv(file.path(path_burden, "coded_comments.csv"),
+                  show_col_types = FALSE)
+```
+
+
+### Benefits to self
+
+```{r}
+codes |> 
+  filter(benefits_self != 0) |> 
+  janitor::tabyl(benefits_self)
+```
+
+#### Positive
+```{r}
+codes |> 
+  filter(benefits_self == "pos") |> 
+  select(comment_num, data, comment) |> 
+  kableExtra::kable() |> 
+   kableExtra::kable_classic()
+```
+
+#### Negative
+```{r}
+codes |> 
+  filter(benefits_self == "neg") |> 
+  select(comment_num, data, comment) |> 
+  kableExtra::kable() |> 
+   kableExtra::kable_classic()
+```
+
+#### Neutral
+```{r}
+codes |> 
+  filter(benefits_self == "neutral") |> 
+  select(comment_num, data, comment) |> 
+  kableExtra::kable() |> 
+   kableExtra::kable_classic()
+```
+
+
+
+### Benefits to Others
+
+```{r}
+codes |> 
+  filter(benefits_other != 0) |> 
+  janitor::tabyl(benefits_other)
+```
+
+#### Positive
+```{r}
+codes |> 
+  filter(benefits_other == "pos") |> 
+  select(comment_num, data, comment) |> 
+  kableExtra::kable() |> 
+   kableExtra::kable_classic()
+```
+
+#### Negative
+```{r}
+codes |> 
+  filter(benefits_other == "neg") |> 
+  select(comment_num, data, comment) |> 
+  kableExtra::kable() |> 
+   kableExtra::kable_classic()
+```
+
+#### Neutral
+```{r}
+codes |> 
+  filter(benefits_other == "neutral") |> 
+  select(comment_num, data, comment) |> 
+  kableExtra::kable() |> 
+   kableExtra::kable_classic()
+```
+
+
+### Privacy
+
+```{r}
+codes |> 
+  filter(privacy != 0) |> 
+  janitor::tabyl(privacy)
+```
+
+#### Positive
+```{r}
+codes |> 
+  filter(privacy == "pos") |> 
+  select(comment_num, data, comment) |> 
+  kableExtra::kable() |> 
+   kableExtra::kable_classic()
+```
+
+#### Negative
+```{r}
+codes |> 
+  filter(privacy == "neg") |> 
+  select(comment_num, data, comment) |> 
+  kableExtra::kable() |> 
+   kableExtra::kable_classic()
+```
+
+#### Neutral
+```{r}
+codes |> 
+  filter(privacy == "neutral") |> 
+  select(comment_num, data, comment) |> 
+  kableExtra::kable() |> 
+   kableExtra::kable_classic()
+```
+
+
+### Feasibility
+
+```{r}
+codes |> 
+  filter(feasibility != 0) |> 
+  janitor::tabyl(feasibility)
+```
+
+#### Positive
+```{r}
+codes |> 
+  filter(feasibility == "pos") |> 
+  select(comment_num, data, comment) |> 
+  kableExtra::kable() |> 
+   kableExtra::kable_classic()
+```
+
+#### Negative
+```{r}
+codes |> 
+  filter(feasibility == "neg") |> 
+  select(comment_num, data, comment) |> 
+  kableExtra::kable() |> 
+   kableExtra::kable_classic()
+```
+
+#### Neutral
+```{r}
+codes |> 
+  filter(feasibility == "neutral") |> 
+  select(comment_num, data, comment) |> 
+  kableExtra::kable() |> 
+   kableExtra::kable_classic()
+```
+
+#### Mixed
+```{r}
+codes |> 
+  filter(feasibility == "mixed") |> 
+  select(comment_num, data, comment) |> 
+  kableExtra::kable() |> 
+   kableExtra::kable_classic()
+```
+
+### Research Context
+
+```{r}
+codes |> 
+  filter(research_context != 0) |> 
+  janitor::tabyl(research_context)
+```
+
+#### Positive
+```{r}
+codes |> 
+  filter(research_context == "pos") |> 
+  select(comment_num, data, comment) |> 
+  kableExtra::kable() |> 
+   kableExtra::kable_classic()
+```
+
+#### Negative
+```{r}
+codes |> 
+  filter(research_context == "neg") |> 
+  select(comment_num, data, comment) |> 
+  kableExtra::kable() |> 
+   kableExtra::kable_classic()
+```
+
+#### Neutral
+```{r}
+codes |> 
+  filter(research_context == "neutral") |> 
+  select(comment_num, data, comment) |> 
+  kableExtra::kable() |> 
+   kableExtra::kable_classic()
+```
+
+### Technology
+
+```{r}
+codes |> 
+  filter(technology != 0) |> 
+  janitor::tabyl(technology)
+```
+
+#### Positive
+```{r}
+codes |> 
+  filter(technology == "pos") |> 
+  select(comment_num, data, comment) |> 
+  kableExtra::kable() |> 
+   kableExtra::kable_classic()
+```
+
+#### Negative
+```{r}
+codes |> 
+  filter(technology == "neg") |> 
+  select(comment_num, data, comment) |> 
+  kableExtra::kable() |> 
+   kableExtra::kable_classic()
+```
+
+#### Neutral
+```{r}
+codes |> 
+  filter(technology == "neutral") |> 
+  select(comment_num, data, comment) |> 
+  kableExtra::kable() |> 
+   kableExtra::kable_classic()
+```
+
+
+### Codes with no themes
+
+395 comments with no themes endorsed
+
+```{r}
+codes |> 
+  mutate(across(benefits_self:technology, ~ if_else(.x == 0, 0, 1)),
+         sum = benefits_self + benefits_other + privacy + feasibility + research_context + technology) |> 
+  filter(sum == 0) |> 
+  select(comment_num, data, comment) |> 
+  kableExtra::kable() |> 
+   kableExtra::kable_classic()
+```

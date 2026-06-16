@@ -1,0 +1,109 @@
+---
+title: "Make final comments" 
+author: "Kendra Wyant"
+date: "`r lubridate::today()`"
+format: 
+  html: 
+    embed-resources: true
+    toc: true 
+    toc_depth: 4
+editor_options: 
+  chunk_output_type: console
+---   
+
+## Notes
+
+This file makes a file of coded comments with all discrepancies resolved. 
+
+
+## Set up
+```{r}
+#| include: false
+
+
+library(tidyverse) 
+library(janitor)
+
+devtools::source_url("https://github.com/jjcurtin/lab_support/blob/main/format_path.R?raw=true")
+
+path_burden <- format_path("/risk2/data_processed/burden2")
+```
+
+## Read in codes
+
+```{r}
+coder_1 <- read_csv(file.path(path_burden, "completed_codes/coded_comments_1_200_KW.csv"),
+                          show_col_types = FALSE) |> 
+  bind_rows(read_csv(file.path(path_burden, "completed_codes/coded_comments_201_400_KW.csv"),
+                          show_col_types = FALSE)) |> 
+  bind_rows(read_csv(file.path(path_burden, "completed_codes/coded_comments_401_600_KW.csv"),
+                          show_col_types = FALSE)) |> 
+  bind_rows(read_csv(file.path(path_burden, "completed_codes/coded_comments_601_859_KW.csv"),
+                          show_col_types = FALSE)) 
+  
+coder_2 <- read_csv(file.path(path_burden, "completed_codes/coded_comments_1_200_EL.csv"),
+                          show_col_types = FALSE) |> 
+  bind_rows(read_csv(file.path(path_burden, "completed_codes/coded_comments_201_400_EL.csv"),
+                          show_col_types = FALSE)) |> 
+  bind_rows(read_csv(file.path(path_burden, "completed_codes/coded_comments_401_600_EL.csv"),
+                          show_col_types = FALSE)) |> 
+  bind_rows(read_csv(file.path(path_burden, "completed_codes/coded_comments_601_859_EL.csv"),
+                          show_col_types = FALSE)) 
+
+resolved <- read_csv(file.path(path_burden,
+                               "completed_codes/resolved_discrepancies_1_200.csv"),
+                          show_col_types = FALSE) |> 
+  bind_rows(read_csv(file.path(path_burden,
+                               "completed_codes/resolved_discrepancies_201_400.csv"),
+                          show_col_types = FALSE)) |> 
+  bind_rows(read_csv(file.path(path_burden,
+                               "completed_codes/resolved_discrepancies_401_600.csv"),
+                          show_col_types = FALSE)) |> 
+  bind_rows(read_csv(file.path(path_burden,
+                               "completed_codes/resolved_discrepancies_601_859.csv"),
+                          show_col_types = FALSE)) 
+```
+
+Check for notes
+```{r}
+coder_1 |> 
+  filter(!is.na(notes)) |> 
+  select(comment_num, data, notes) 
+```
+
+Remove comment_num's according to notes 
+```{r}
+coder_1 <- coder_1 |> 
+  filter(!comment_num %in% c(62, 123, 222, 302, 388, 562)) |> 
+  select(-notes)
+
+coder_2 <- coder_2 |> 
+  filter(!comment_num %in% c(62, 123, 222, 302, 388, 562))
+
+resolved <- resolved |> 
+  filter(comment_num != 123)
+```
+
+
+## Replace Discrepant Codes
+```{r}
+disc_code <- coder_1 |> 
+  anti_join(coder_2) 
+```
+
+```{r}
+codes <- coder_1 |> 
+  filter(!comment_num %in% disc_code$comment_num)
+
+codes <- codes |> 
+  bind_rows(resolved)
+```
+
+## Write out final codes
+```{r}
+codes |> 
+  write_csv(file.path(path_burden, "coded_comments.csv"))
+```
+
+
+
