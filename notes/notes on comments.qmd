@@ -1,0 +1,69 @@
+---
+title: "burden notes"
+---
+
+Okay I also read through all the comments and referenced what yall said. First, thank you both so much for the thoughtful suggestions. I think we can finalize resolving these in this thread. Comment on these final decisions about any you disagree with or have additional input on! 
+
+### Benefits to self
+
+57 - I agree with Ella about keeping in pos benefits to self because of "it help me When bad thing happen I can deal with better"
+
+38 - I think this should stay too for the compensation portion. I think the "not so great to do" part affects the feasibility portion of the comment ("its long")
+
+I think I prefer keeping the compensation benefits in with benefits to self. I think it might be interesting to point out that in fact only a small minority of participants cited compensation as a benefit and instead tended to focus on therapeutic/recovery-related benefits. 
+
+818 - I think this is still neg benefits because its causing them to feel a negative emotion. Interesting point about it being similar to our privacy comments (sketchy). Should we also code it negative on privacy? I would be okay with that!
+
+246 - I agree with you Claire. I think we decided on a later comment that negative emotional reactions to flaws in the technology should not be counted as a negative benefit. I will change this one to 0 on benefits to self.
+
+447 and 449 - I also agree on changing to pos
+
+### Benefits to others
+
+306 - Lets change to pos research context as Claire suggested.
+
+279 - Ella I am not seeing this comment num
+
+523 - I agree "Hope Im helping" may very likely be for research team. I also would change to 0.
+
+64 - I don't think this would be pos because they just say they understand and they are dealing with it. I suggest leaving as neutral.
+
+
+### Privacy
+
+8, 9, 10 - I prefer to leave these as positive and as Claire suggested also code some of the no theme comments that say they don't mind sharing passive data as positive too. I think thats probably as far positive as we can expect to get for these data. Do we feel okay also coding the nothing to hide comments as positive? 
+
+"kind of weird" comments will be neg on privacy also leaning towards comment 818 from above (kinda scary) as neg on privacy
+
+I'm good with coding 164, 372, 560, and 617 as neg on privacy
+
+### Feasibility
+
+I think 402/403 should stay as neg feasibility. If they don't text/call much its likely not a feasible sensing method for prediction. Thoughts? I know this is slightly different than how we mostly have been viewing feasibility from the view of how effortful for the participant. I suppose it could be technology too because they may be communicating through different platforms or in different ways (social media, in person)
+
+585 - I think we can keep in feasibility (We wouldnt ask about a number that didn't come up in their logs - hopefully!)
+
+148 - change to positive
+
+For mixed comments:
+161 - I tend to agree with Ella that the forgetting is more negative than the positive of it being easy enough to do.
+557 - positive
+83, 104, and 702 - negative
+
+### Research Context
+
+115, 292, 793 - change to 0
+
+### Technology
+
+28 change to neutral
+
+495, 496, 650, 651 - I am going to leave as neutral since it offers feedback about how to improve methods but is not really related to feasibility and I want to have a way to find those. Neutral becomes 0 in analyses anyways. 
+
+### Other non-themes not addressed above
+
+I agree with you both - lets change comments along the lines of "I like it/I enjoy it" to pos feasibility but lets leave "its fine" as 0
+
+622, 712, 714 change to pos benefits to self
+
+I don't remember what you 2 though 845 ("It un needed information") meant related to Privacy neg. I don't understand the comment can you remind me?
